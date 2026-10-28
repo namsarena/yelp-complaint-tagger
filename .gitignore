@@ -3,7 +3,7 @@
 *.token
 
 # large or reproducible files: keep out of git
-data/raw/
+data/
 models/
 checkpoints/
 wandb/

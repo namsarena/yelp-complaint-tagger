@@ -7,16 +7,12 @@ A small multi-label model that tags *why* a restaurant got a bad review (wait ti
 Data: [Yelp/yelp_review_full](https://huggingface.co/datasets/Yelp/yelp_review_full), 1-2 star reviews only. Yelp data is for academic, non-commercial use, so the model is released for non-commercial research.
 
 ## Layout
-| Path | What | In git? |
-|---|---|---|
-| `labels.yaml` | Label definitions (change the version when labels change) | yes |
-| `notebooks/` | Colab notebooks, one per step | yes |
-| `src/` | Reusable code (labelling prompt, training script) | yes |
-| `data/raw/` | Downloaded reviews (reproducible from the Hub) | no |
-| `data/labeled/` | LLM-labelled training set (small CSV) | yes |
-| `data/gold/` | Hand-checked test set: the source of truth | yes |
-| `models/` | Trained weights (versioned on the Hugging Face Hub instead) | no |
+| Path | What |
+|---|---|
+| `notebooks/yelp_complaint_tagger.ipynb` | The full build: data, LLM labelling, baseline, fine-tuning, evaluation, publishing (open in Colab) |
+| `labels.yaml` | Label definitions and rules (v1.1) |
 
+**Data is not included** because Yelp's license doesn't allow redistribution; the notebook re-downloads `Yelp/yelp_review_full` and rebuilds the labels.
 
 ## Progress
 - [x] 1. Label design (v1.1, see `labels.yaml`)
@@ -26,4 +22,5 @@ Data: [Yelp/yelp_review_full](https://huggingface.co/datasets/Yelp/yelp_review_f
 - [x] 6. Baseline (TF-IDF + logistic regression)
 - [x] 7. Fine-tune DistilBERT (weighted loss, per-label thresholds)
 - [x] 8. Evaluate, model card, publish
-- [ ] Notebook in `notebooks/`, demo video, Gradio demo
+- [x] Notebook in `notebooks/`
+- [ ] Demo video, Gradio demo
