@@ -1,14 +1,20 @@
-# Label set v0.1 for the restaurant complaint tagger (multi-label: a review can have several)
-version: 0.1
+# Label set for the restaurant complaint tagger (multi-label: a review can have several)
+version: 1.1
 task: multi-label classification of 1-2 star Yelp restaurant reviews
 labels:
-  wait_time: Slow seating, slow food, ignored at the table
-  staff_attitude: Rude, dismissive or unprofessional staff
-  food_quality: Taste, freshness, cooking, cold food
-  order_accuracy: Wrong or missing items
-  price_value: Overpriced, tiny portions
-  hygiene_safety: Dirty tables, hair in food, got sick
-  ambience: Noise, seating, temperature, decor
-  billing_policy: Overcharged, refunds, reservation rules, manager handling
-filter:
-  is_restaurant: drop reviews that are not about a restaurant, bar or cafe
+  wait_time: Slow seating, slow food, slow bill, forgotten or ignored by staff
+  staff_attitude: Rude, dismissive or disrespectful staff (not slowness, not mistakes)
+  food_quality: Taste, freshness, dryness, cooking, temperature, drinks made badly
+  order_accuracy: Wrong, missing or unavailable (sold out) items
+  price_value: Overpriced, tiny portions, "not worth it"
+  hygiene_safety: Dirty, hair or bugs in food, got sick
+  ambience: Complaints about noise, music, seating, temperature, decor
+  billing_policy: Overcharged or wrong bill, refunds, reservation rules, manager handling
+rules:
+  - NOT_RESTAURANT always stands alone; such reviews are dropped.
+  - Restaurants include bars, cafes, bakeries, dessert and boba shops, food trucks.
+  - Tag complaints only. Praise or neutral description ("cute ambiance") gets no label.
+  - Tag what is stated, not what is guessed.
+changelog:
+  "1.1": pilot review (10 reviews) added rules; order_accuracy covers sold-out items; staff_attitude excludes slowness and mistakes.
+  "1.0": initial 8 labels.
