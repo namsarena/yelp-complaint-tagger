@@ -16,7 +16,7 @@ Data: [Yelp/yelp_review_full](https://huggingface.co/datasets/Yelp/yelp_review_f
 | `data/labeled/` | LLM-labelled training set (small CSV) | yes |
 | `data/gold/` | Hand-checked test set: the source of truth | yes |
 | `models/` | Trained weights (versioned on the Hugging Face Hub instead) | no |
-| `launch/` | LinkedIn carousel and posts, video slides (PDF + PPTX), demo script, recording guide, teleprompter | yes |
+
 
 ## Progress
 - [x] 1. Label design (v1.1, see `labels.yaml`)
