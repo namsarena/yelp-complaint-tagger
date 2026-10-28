@@ -1,0 +1,118 @@
+<title>Complaint Tagger Teleprompter</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: full-height reading stage with a fixed reading line; control bar pinned to the bottom. Deliberately dark-only, like studio prompters. */
+:root{--bg:#121417;--fg:#F2F1EC;--dim:#7D828C;--cue:#E0A22B;--type:#7FC8F8;--line:#C8323C;--bar:#1B1E23;--edge:#2C3038;
+--read:'Atkinson Hyperlegible',Verdana,sans-serif;--mono:'IBM Plex Mono',Menlo,monospace;color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--read);overflow:hidden}
+.app{height:100%;display:flex;flex-direction:column}
+.stage{flex:1;overflow-y:auto;scroll-behavior:auto;position:relative;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.stage.mirror .script{transform:scaleX(-1)}
+.script{max-width:1100px;margin:0 auto;padding-block:42vh 70vh}
+.sec{padding-block:0 1.4em}
+.sec h2{font-family:var(--mono);font-size:max(14px,.32em);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:0 0 .4em}
+.cue{font-family:var(--mono);font-size:max(14px,.34em);color:var(--cue);margin:0 0 .7em}
+.ln{margin:0 0 .55em;line-height:1.35;text-wrap:pretty}
+.ln.type{color:var(--type);font-family:var(--mono);font-size:.82em}
+.ln.type::before{content:"TYPE  ";color:var(--dim)}
+.hide-cues .cue,.hide-cues .sec h2{display:none}
+.marker{position:fixed;left:0;right:0;top:40vh;height:0;border-top:2px solid var(--line);opacity:.55;pointer-events:none;z-index:2}
+.marker::before{content:"";position:absolute;left:6px;top:-9px;border:8px solid transparent;border-left:12px solid var(--line)}
+.count{position:fixed;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:22vh;color:var(--cue);background:rgba(18,20,23,.75);z-index:5}
+.bar{background:var(--bar);border-top:1px solid var(--edge);display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;
+padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));font-family:var(--mono);font-size:13px;transition:opacity .3s}
+.playing .bar{opacity:.35}.playing .bar:hover,.playing .bar:focus-within{opacity:1}
+button,select{font:inherit;color:var(--fg);background:#262A31;border:1px solid var(--edge);border-radius:6px;padding:7px 12px;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--cue);outline-offset:2px}
+button.primary{background:var(--line);border-color:var(--line);font-weight:600;min-width:92px}
+button[aria-pressed="true"]{border-color:var(--cue);color:var(--cue)}
+label{display:flex;align-items:center;gap:8px;color:var(--dim)}
+input[type=range]{width:110px;accent-color:var(--cue)}
+.stat{color:var(--dim);font-variant-numeric:tabular-nums;margin-left:auto}
+.keys{color:var(--dim);width:100%;font-size:12px}
+@media (max-width:640px){.keys{display:none}.stat{margin-left:0}}
+@media (prefers-reduced-motion:reduce){.bar{transition:none}}
+</style>
+<div class="app" id="app">
+  <div class="stage" id="stage"><div class="script" id="script"></div></div>
+  <div class="marker" aria-hidden="true"></div>
+  <div class="bar" role="toolbar" aria-label="Teleprompter controls">
+    <button class="primary" id="play">▶ Start</button>
+    <button id="restart">⟲ Top</button>
+    <select id="jump" aria-label="Jump to section"></select>
+    <label for="speed">Speed <input type="range" id="speed" min="10" max="160" step="5" value="45"><span id="speedv">45</span></label>
+    <label for="size">Size <input type="range" id="size" min="28" max="110" step="2" value="56"><span id="sizev">56</span></label>
+    <button id="mirror" aria-pressed="false">Mirror</button>
+    <button id="cues" aria-pressed="true">Cues</button>
+    <span class="stat" id="stat">0:00 · 0%</span>
+    <span class="keys">Space start/pause · ↑↓ speed · +/− size · M mirror · C cues · click the text to pause · scroll or drag to reposition</span>
+  </div>
+</div>
+<div class="count" id="count" hidden></div>
+<script>
+const SECTIONS = [{"id": "hook", "title": "Hook", "time": "0:00", "cue": "CAMERA. Smile, slow down.", "lines": ["Every restaurant gets bad reviews.", "But a one-star rating only tells you that something went wrong.", "It doesn't tell you what.", "So I built a small AI model that reads bad reviews and tells you why, in seconds.", "And I published it for free on Hugging Face.", "Quick note: this is a learning project, not a finished product. I'll show you what works and what doesn't."]}, {"id": "problem", "title": "The problem", "time": "0:20", "cue": "CAMERA.", "lines": ["Picture a restaurant manager on a Monday morning.", "Forty new reviews came in over the weekend. Twelve are one or two stars.", "Was it the wait? A rude server? Cold food? A wrong order? A billing mistake?", "Reading every review takes time, and patterns are easy to miss.", "One public Yelp dataset alone has more than 190,000 bad reviews. Nobody reads all of that."]}, {"id": "what", "title": "What it does", "time": "1:00", "cue": "SCREEN: the model page on Hugging Face. Scroll slowly past the label list.", "lines": ["Here's the model. It's called Yelp Complaint Tagger.", "You give it a negative review, and it returns one or more of eight complaint types.", "Wait time. Staff attitude. Food quality. Order accuracy.", "Price and value. Hygiene and safety. Ambience. And billing or policy.", "One review can hold several complaints. The model catches each one and gives it a confidence score."]}, {"id": "demo", "title": "Live demo", "time": "1:45", "cue": "SCREEN: demo page (Gradio Space) or the Colab 'tag' cell. Type each review live.", "lines": ["Let me show you. First review:", "[TYPE] We waited 45 minutes and the burger was cold.", "It finds two problems: wait time and food quality. That's exactly right.", "The next one is trickier:", "[TYPE] They forgot half our order and charged us twice. The manager refused a refund.", "It flags billing and policy with high confidence. It doesn't always catch the forgotten items, and I'll come back to that.", "Now one from my own experience:", "[TYPE] Good ambiance, but the food smelled and it wasn't worth the price for a buffet.", "Food quality and price. And look at what it did not tag: ambience.", "The reviewer praised the ambiance, so it isn't a complaint. The model learned that difference.", "Now picture running this on all forty weekend reviews at once.", "Instead of reading every one, the manager sees that half of them are about wait time.", "That points to Saturday-night staffing, not the kitchen."]}, {"id": "built", "title": "How I built it", "time": "4:00", "cue": "SCREEN: video slide 2, 'How I built it'.", "lines": ["How did I build it? In one day, with free tools.", "First, I wrote a short labelling guide: eight complaint types and a few clear rules.", "For example, praise is not a complaint, and slow service is not the same as rude service.", "Second, a free open-source AI model labelled 3,500 real Yelp reviews using that guide.", "I checked its work by hand. About 18 out of 20 were right.", "Third, I trained a small, fast model on those labels. Small means it's cheap to run on thousands of reviews.", "On a standard quality score, the F1 score, it went from 0.58 for a keyword approach to 0.71.", "It beats the keyword approach on all eight complaint types."]}, {"id": "tools", "title": "Tools and time", "time": "4:50", "cue": "SCREEN: video slide 3, 'Tools and time'.", "lines": ["Everything I used is free.", "Google Colab gave me a free GPU. Hugging Face hosts the data and the model.", "An open-source AI model did the first round of labelling, and DistilBERT is the small model I trained.", "It took me about six hours, with an AI coach walking me through each step.", "If you want a model for your own business, plan on about one to two weeks.", "Most of that time goes into collecting your own reviews and checking a few hundred labels by hand. The training itself takes minutes."]}, {"id": "limits", "title": "Where it falls short", "time": "5:40", "cue": "CAMERA. Plain and direct.", "lines": ["It isn't perfect, so here is where it struggles.", "It only knows complaints. Give it a five-star review and it will still look for problems, so use it on one- and two-star reviews.", "It can trip on negation, like 'the staff was not rude'.", "It learned from AI-made labels, so it carries some of that AI's habits.", "And this version is trained on Yelp's public data, which is licensed for non-commercial use.", "A business version would be trained on your own reviews."]}, {"id": "improve", "title": "How it could improve", "time": "6:15", "cue": "SCREEN: video slide 4, 'How it could improve'.", "lines": ["Here is how I would make it better.", "First, a larger hand-checked test set, a few hundred reviews, so the score reflects people, not just the AI labeller.", "Second, train it on happy and neutral reviews too, so it can say 'no complaint'.", "Third, more examples for the rare complaints, like billing and wrong orders.", "Fourth, show the exact sentence behind each tag, so a manager can trust it at a glance.", "And finally, a simple dashboard that runs it on every new review, every week."]}, {"id": "uses", "title": "Use cases", "time": "6:50", "cue": "SCREEN: video slide 5, 'Where this helps'.", "lines": ["So where could this be useful? Here are six practical use cases.", "One. Restaurant owners and managers: a weekly complaint breakdown, so you fix the right thing first.", "Two. Restaurant groups and franchises: compare locations. If one store has twice the wait-time complaints, you know where to send help.", "Three. Delivery and ordering platforms: send each complaint to the right team. Order mistakes go to the kitchen, billing goes to finance.", "Four. Reputation and marketing agencies: turn hundreds of client reviews into a one-page monthly report.", "Five. Restaurant software companies, like point-of-sale or reservation platforms: build review insights into the product.", "Six. Food-safety teams: surface hygiene complaints fast, so a person can follow up.", "The same approach works beyond restaurants: hotels, clinics, retail, or wineries with tasting rooms.", "Change the labels, and you have a new model."]}, {"id": "close", "title": "Close", "time": "8:20", "cue": "CAMERA. Smile.", "lines": ["The model is free to try on Hugging Face. The link is in the description.", "If you run a restaurant, or a team that reads a lot of customer feedback, tell me which complaint types you'd want to track.", "And once more: this is a learning project, shared to learn in public. Thanks for watching."]}];
+const $ = id => document.getElementById(id);
+const stage = $("stage"), script = $("script"), app = $("app");
+const store = { get(k, d) { try { const v = localStorage.getItem("tp-" + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+                set(k, v) { try { localStorage.setItem("tp-" + k, JSON.stringify(v)); } catch {} } };
+
+SECTIONS.forEach(s => {
+  const sec = document.createElement("section"); sec.className = "sec"; sec.id = "s-" + s.id;
+  const h = document.createElement("h2"); h.textContent = s.time + " · " + s.title; sec.append(h);
+  const c = document.createElement("p"); c.className = "cue"; c.textContent = "[" + s.cue + "]"; sec.append(c);
+  s.lines.forEach(l => { const p = document.createElement("p"); const t = l.startsWith("[TYPE]");
+    p.className = "ln" + (t ? " type" : ""); p.textContent = t ? l.slice(7) : l; sec.append(p); });
+  script.append(sec);
+  const o = document.createElement("option"); o.value = s.id; o.textContent = s.time + "  " + s.title; $("jump").append(o);
+});
+
+let playing = false, last = 0, pos = 0, elapsed = 0, wake = null;
+const speedEl = $("speed"), sizeEl = $("size");
+function applySize() { script.style.fontSize = sizeEl.value + "px"; $("sizev").textContent = sizeEl.value; store.set("size", +sizeEl.value); }
+function applySpeed() { $("speedv").textContent = speedEl.value; store.set("speed", +speedEl.value); }
+speedEl.value = store.get("speed", 45); sizeEl.value = store.get("size", 56); applySize(); applySpeed();
+function setToggle(btn, on, cls, key) { btn.setAttribute("aria-pressed", on); cls(on); store.set(key, on); }
+const mirrorOn = on => stage.classList.toggle("mirror", on), cuesOn = on => script.classList.toggle("hide-cues", !on);
+setToggle($("mirror"), store.get("mirror", false), mirrorOn, "mirror");
+setToggle($("cues"), store.get("cues", true), cuesOn, "cues");
+
+function fmt(s) { s = Math.floor(s); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+function stat() { const max = stage.scrollHeight - stage.clientHeight; $("stat").textContent = fmt(elapsed) + " · " + Math.round(max > 0 ? 100 * stage.scrollTop / max : 0) + "%"; }
+function frame(t) {
+  if (!playing) return;
+  const dt = last ? (t - last) / 1000 : 0; last = t; elapsed += dt;
+  pos += speedEl.value * dt; stage.scrollTop = pos;
+  if (stage.scrollTop + stage.clientHeight >= stage.scrollHeight - 1) pause();
+  stat(); requestAnimationFrame(frame);
+}
+async function lockScreen() { try { wake = await navigator.wakeLock?.request("screen"); } catch { wake = null; } }
+function start() {
+  const c = $("count"); let n = 3; c.hidden = false; c.textContent = n;
+  const iv = setInterval(() => { n--; if (n > 0) { c.textContent = n; return; } clearInterval(iv); c.hidden = true;
+    playing = true; last = 0; pos = stage.scrollTop; app.classList.add("playing"); $("play").textContent = "❚❚ Pause";
+    lockScreen(); requestAnimationFrame(frame); }, 700);
+}
+function pause() { playing = false; app.classList.remove("playing"); $("play").textContent = "▶ Resume"; try { wake?.release(); } catch {} stat(); }
+$("play").onclick = () => playing ? pause() : start();
+$("restart").onclick = () => { pause(); stage.scrollTop = 0; pos = 0; elapsed = 0; $("play").textContent = "▶ Start"; stat(); };
+$("jump").onchange = e => { const el = $("s-" + e.target.value); stage.scrollTop = el.offsetTop - stage.clientHeight * 0.4 + 10; pos = stage.scrollTop; stat(); };
+speedEl.oninput = applySpeed; sizeEl.oninput = applySize;
+$("mirror").onclick = e => setToggle(e.currentTarget, e.currentTarget.getAttribute("aria-pressed") !== "true", mirrorOn, "mirror");
+$("cues").onclick = e => setToggle(e.currentTarget, e.currentTarget.getAttribute("aria-pressed") !== "true", cuesOn, "cues");
+script.onclick = () => { if (playing) pause(); };
+stage.addEventListener("scroll", () => { if (!playing) { pos = stage.scrollTop; stat(); } });
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
+  if (e.code === "Space") { e.preventDefault(); playing ? pause() : start(); }
+  else if (e.key === "ArrowUp") { speedEl.value = +speedEl.value + 5; applySpeed(); e.preventDefault(); }
+  else if (e.key === "ArrowDown") { speedEl.value = +speedEl.value - 5; applySpeed(); e.preventDefault(); }
+  else if (e.key === "+" || e.key === "=") { sizeEl.value = +sizeEl.value + 4; applySize(); }
+  else if (e.key === "-") { sizeEl.value = +sizeEl.value - 4; applySize(); }
+  else if (e.key.toLowerCase() === "m") $("mirror").click();
+  else if (e.key.toLowerCase() === "c") $("cues").click();
+});
+document.addEventListener("visibilitychange", () => { if (document.hidden && playing) pause(); });
+stat();
+</script>
