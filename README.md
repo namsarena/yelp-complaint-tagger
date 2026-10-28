@@ -2,6 +2,8 @@
 
 A small multi-label model that tags *why* a restaurant got a bad review (wait time, staff attitude, food quality, order accuracy, price/value, hygiene/safety, ambience, billing/policy). Model: [nrr26/yelp-complaint-tagger](https://huggingface.co/nrr26/yelp-complaint-tagger). Average F1 0.71 vs 0.58 for a keyword baseline on 354 held-out reviews.
 
+**Try it in your browser:** [huggingface.co/spaces/nrr26/complaint-tagger](https://huggingface.co/spaces/nrr26/complaint-tagger): a tab for diners (what to expect) and a tab for owners (best next action). No code needed.
+
 > Learning project, not production software. The model is licensed CC BY-NC 4.0 (non-commercial).
 
 Data: [Yelp/yelp_review_full](https://huggingface.co/datasets/Yelp/yelp_review_full), 1-2 star reviews only. Yelp data is for academic, non-commercial use, so the model is released for non-commercial research.
