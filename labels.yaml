@@ -1,0 +1,14 @@
+# Label set v0.1 for the restaurant complaint tagger (multi-label: a review can have several)
+version: 0.1
+task: multi-label classification of 1-2 star Yelp restaurant reviews
+labels:
+  wait_time: Slow seating, slow food, ignored at the table
+  staff_attitude: Rude, dismissive or unprofessional staff
+  food_quality: Taste, freshness, cooking, cold food
+  order_accuracy: Wrong or missing items
+  price_value: Overpriced, tiny portions
+  hygiene_safety: Dirty tables, hair in food, got sick
+  ambience: Noise, seating, temperature, decor
+  billing_policy: Overcharged, refunds, reservation rules, manager handling
+filter:
+  is_restaurant: drop reviews that are not about a restaurant, bar or cafe

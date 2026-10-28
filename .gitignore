@@ -1,0 +1,18 @@
+# secrets
+.env
+*.token
+
+# large or reproducible files: keep out of git
+data/raw/
+models/
+checkpoints/
+wandb/
+*.safetensors
+*.bin
+*.pt
+
+# python / notebooks / mac
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+.DS_Store
