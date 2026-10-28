@@ -80,3 +80,12 @@ Open an issue or a pull request, or post in the model's Community tab.
 - [x] 8. Evaluate, model card, publish
 - [x] Notebook in `notebooks/`
 - [ ] Demo video, Gradio demo
+
+## License
+| Part | License |
+|---|---|
+| Code in this repo (notebook, `labels.yaml`, app code) | [MIT](LICENSE) |
+| Model weights on Hugging Face (`nrr26/yelp-complaint-tagger`) | [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/): non-commercial, because they were trained on Yelp data |
+| Training data | Not included. `Yelp/yelp_review_full` is under Yelp's dataset terms (non-commercial) |
+
+This is a learning project, not production software.
