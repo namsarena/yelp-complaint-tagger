@@ -8,6 +8,14 @@ A small multi-label model that tags *why* a restaurant got a bad review (wait ti
 
 Data: [Yelp/yelp_review_full](https://huggingface.co/datasets/Yelp/yelp_review_full), 1-2 star reviews only. Yelp data is for academic, non-commercial use, so the model is released for non-commercial research.
 
+## Quick links
+| What | Where | Use it for |
+|---|---|---|
+| **App** (no code) | [huggingface.co/spaces/nrr26/complaint-tagger](https://huggingface.co/spaces/nrr26/complaint-tagger) | Diners: Before You Book. Owners: Fix-It List. Demo restaurants or your own copied reviews |
+| **Model** | [huggingface.co/nrr26/yelp-complaint-tagger](https://huggingface.co/nrr26/yelp-complaint-tagger) | Load in code; model card with results, limits, license |
+| **Code** | [github.com/namsarena/yelp-complaint-tagger](https://github.com/namsarena/yelp-complaint-tagger) | Notebook (data → labels → training), page code (`space/`), tests (`tests/`) |
+| **MCP link** (Claude, ChatGPT) | `https://nrr26-complaint-tagger.hf.space/gradio_api/mcp/` | Add as a custom connector; tools: `owner_report`, `diner_tips`, `tag_review` |
+
 ## For developers
 
 ### Use it
@@ -81,7 +89,9 @@ Open an issue or a pull request, or post in the model's Community tab.
 - [x] 7. Fine-tune DistilBERT (weighted loss, per-label thresholds)
 - [x] 8. Evaluate, model card, publish
 - [x] Notebook in `notebooks/`
-- [ ] Demo video, Gradio demo
+- [x] Web app (Hugging Face Space, `space/`) with diner and owner tabs, MCP tools
+- [x] Tests: unit (`tests/test_cleanup.py`), BAT and UAT (`tests/run_bat_uat.py`)
+- [ ] Demo video
 
 ## License
 | Part | License |

@@ -20,5 +20,6 @@ Paste your 1-2 star reviews. The page tags each complaint (wait time, staff atti
 
 - Model: [nrr26/yelp-complaint-tagger](https://huggingface.co/nrr26/yelp-complaint-tagger) (CC BY-NC 4.0)
 - Code: [github.com/namsarena/yelp-complaint-tagger](https://github.com/namsarena/yelp-complaint-tagger) (MIT)
+- Use it in Claude or ChatGPT: add a custom MCP connector with `https://nrr26-complaint-tagger.hf.space/gradio_api/mcp/`
 
 A free learning project, provided as is. Results are automated estimates from a small AI model and can be wrong; they are not a rating, inspection or endorsement of any business. Not affiliated with Yelp, Google or any restaurant. Demo restaurant names and their reviews were made up for the demo. Not professional advice. Text you paste is processed in memory and not saved by this app.
