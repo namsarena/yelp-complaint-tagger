@@ -17,6 +17,12 @@ MAX_CHARS = 2000
 tok = AutoTokenizer.from_pretrained(REPO)
 model = AutoModelForSequenceClassification.from_pretrained(REPO).eval()
 THRESHOLDS = model.config.label_thresholds
+
+# A second small free model (Apache 2.0) used only to keep negative reviews from a pasted page.
+SENTIMENT = "distilbert/distilbert-base-uncased-finetuned-sst-2-english"
+s_tok = AutoTokenizer.from_pretrained(SENTIMENT)
+s_model = AutoModelForSequenceClassification.from_pretrained(SENTIMENT).eval()
+LATEST_N = 15
 LABELS = list(model.config.id2label.values())
 
 NAMES = {
@@ -98,6 +104,50 @@ I got food poisoning after the chicken sandwich.""",
 }
 
 
+import re
+
+# Lines that are page furniture, not review text, when someone copies a whole review page.
+NOISE = re.compile(
+    r"^(helpful|share|report|more|read more|less|like|reply|translate|sort by|newest|highest|lowest|most relevant|"
+    r"filter|search reviews|write a review|see all|photos?|menu|directions|website|call|save|follow|useful|funny|cool|"
+    r"response from the owner|owner response|local guide|elite|recommended reviews?|reviews?)\b",
+    re.I)
+AGO = re.compile(r"\b(\d+|a|an)\s+(minute|hour|day|week|month|year)s?\s+ago\b|^\d{1,2}/\d{1,2}/\d{2,4}$", re.I)
+
+
+def clean_page(text, latest=LATEST_N):
+    """Turn a whole copied review page into review texts, newest first as they appear on the page."""
+    out, seen, skip_reply = [], set(), False
+    for raw in (text or "").splitlines():
+        line = " ".join(raw.split())
+        if re.match(r"^(response from the owner|owner response|business owner|comment from)", line, re.I):
+            skip_reply = True  # the owner's reply text comes next; it isn't a customer review
+            continue
+        if skip_reply and len(line) >= 40:
+            skip_reply = False
+            continue
+        if len(line) < 40 or len(line.split()) < 7 or NOISE.match(line) or AGO.search(line) and len(line) < 60:
+            continue
+        key = line.lower()[:80]
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(line[:MAX_CHARS])
+        if len(out) >= latest:
+            break
+    return out
+
+
+def negative_only(lines):
+    """Keep the reviews the sentiment model reads as negative."""
+    if not lines:
+        return lines
+    enc = s_tok(lines, return_tensors="pt", truncation=True, max_length=256, padding=True)
+    with torch.no_grad():
+        p = torch.softmax(s_model(**enc).logits, -1)[:, 0].tolist()  # index 0 = NEGATIVE
+    return [l for l, n in zip(lines, p) if n >= 0.6]
+
+
 def score(texts):
     """Probability per label for each text."""
     out = []
@@ -125,9 +175,14 @@ def tag_review(review: str) -> dict:
     return {l: round(p[i], 2) for i, l in enumerate(LABELS) if p[i] > THRESHOLDS[l]}
 
 
-def _analyse(reviews):
-    """Split pasted text into reviews and tag each one."""
-    lines = [l.strip()[:MAX_CHARS] for l in (reviews or "").splitlines() if l.strip()][:MAX_REVIEWS]
+def _analyse(reviews, whole_page=False, only_negative=False):
+    """Split pasted text into reviews (optionally cleaning a whole copied page) and tag each one."""
+    if whole_page:
+        lines = clean_page(reviews)
+    else:
+        lines = [l.strip()[:MAX_CHARS] for l in (reviews or "").splitlines() if l.strip()][:MAX_REVIEWS]
+    if only_negative:
+        lines = negative_only(lines)
     probs = score(lines) if lines else []
     found = [[l for i, l in enumerate(LABELS) if p[i] > THRESHOLDS[l]] for p in probs]
     counts = pd.Series([l for f in found for l in f], dtype=object).value_counts()
@@ -153,24 +208,27 @@ def _table(lines, found):
     return pd.DataFrame({"Review": lines, "Problems": [", ".join(NAMES[l] for l in f) or "None found" for f in found]})
 
 
-EMPTY = "Pick a demo restaurant, or switch to **Use my own reviews** and paste at least one review (one per line)."
+EMPTY = ("No negative reviews found to analyse. Pick a demo restaurant, or switch to **Use my own reviews**, "
+         "sort the review site by **Newest**, scroll, then copy and paste the page.")
 
 NOTE = ("\n\n---\n_Automated estimate from a small AI model. It only reads the text you pasted, can be wrong, "
         "and is not a rating, inspection or endorsement of any business. See the disclaimer below._")
 
 
-def owner_report(reviews: str, restaurant: str = ""):
+def owner_report(reviews: str, restaurant: str = "", whole_page: bool = False, only_negative: bool = False):
     """For restaurant owners: tag 1-2 star reviews (one per line), count the complaints and give the best next action.
 
     Args:
         reviews: Several 1-2 star reviews of one restaurant, one review per line.
         restaurant: Optional restaurant name, used only to label the report.
+        whole_page: True if the text is a whole copied review page; the newest 15 reviews are extracted.
+        only_negative: True to keep only reviews a sentiment model reads as negative.
 
     Returns:
         A plain-English action plan (best next action plus the top 3 problems with steps), a chart of
         complaint counts, and a table of each review with its complaint types.
     """
-    lines, found, counts = _analyse(reviews)
+    lines, found, counts = _analyse(reviews, whole_page, only_negative)
     if not lines:
         return EMPTY, None, pd.DataFrame(columns=["Review", "Problems"])
     if not len(counts):
@@ -189,17 +247,19 @@ def owner_report(reviews: str, restaurant: str = ""):
     return "\n".join(parts) + NOTE, _chart(counts, "What customers complain about"), _table(lines, found)
 
 
-def diner_tips(reviews: str, restaurant: str = ""):
+def diner_tips(reviews: str, restaurant: str = "", whole_page: bool = False, only_negative: bool = False):
     """For diners: summarise what people complain about at a restaurant and give practical tips before visiting.
 
     Args:
         reviews: Several 1-2 star reviews of one restaurant, one review per line.
         restaurant: Optional restaurant name, used only to label the tips.
+        whole_page: True if the text is a whole copied review page; the newest 15 reviews are extracted.
+        only_negative: True to keep only reviews a sentiment model reads as negative.
 
     Returns:
         Plain-English tips for a visitor, based only on the complaints provided, and a chart of complaint counts.
     """
-    lines, found, counts = _analyse(reviews)
+    lines, found, counts = _analyse(reviews, whole_page, only_negative)
     if not lines:
         return EMPTY, None
     if not len(counts):
@@ -218,28 +278,30 @@ def load_sample(name):
     return SAMPLES.get(name, ""), (name or "").split(" · ")[0]
 
 
+
 def switch_mode(mode):
     """Show the demo picker or the 'my own reviews' fields."""
     own = mode == MODES[1]
     return (gr.update(visible=not own, value=None), gr.update(visible=own, value=""),
-            gr.update(visible=own, value="", label="Reviews: one per line, up to 200"),
-            gr.update(visible=not own, open=False), gr.update(value=""))
+            gr.update(visible=own, value="", label="Paste the review page here (Cmd+A, Cmd+C on the review site, then Cmd+V)"),
+            gr.update(visible=not own, open=False), gr.update(value=""), gr.update(visible=own, value=own), gr.update(visible=own, value=own))
 
 
 MODES = ["Try a demo restaurant", "Use my own reviews"]
 
 
-HOW_IT_FINDS = """**This page never fetches reviews from any website.** Demo restaurants come with made-up reviews. To try your own:
+HOW_IT_FINDS = """**This page never fetches reviews from any website.** Demo restaurants come with made-up reviews. For a real restaurant:
 
-1. Open the restaurant on a site or app you already use (Google Maps, Yelp, a delivery app).
-2. Filter to **1-2 star reviews** and copy the review text.
-3. Paste them here, **one review per line**.
+1. Open it on a site or app you use (Google Maps, Yelp, a delivery app) and **sort reviews by Newest**.
+2. Scroll a little so the latest reviews load, then press **Cmd+A** and **Cmd+C** (Ctrl+A, Ctrl+C on Windows).
+3. Switch to **Use my own reviews** and paste with **Cmd+V**.
 
-Why not search by restaurant name? Review sites don't allow other tools to copy their reviews automatically, and their
-official APIs return only a few reviews, need paid keys, and limit how review text can be reused. This free learning project
-stays on the safe side: you choose exactly what gets analysed.
+The page picks out the **newest 15 reviews** from the copied text, keeps the **negative** ones (a second small AI model
+decides), and analyses those. Prefer a clean list? Untick "I pasted a whole page" and paste one review per line.
 
-Don't paste names, phone numbers or other personal details."""
+Why not fetch reviews automatically? Review sites don't allow tools to collect their reviews, and their official APIs
+return only a few reviews, need paid keys, and limit how the text can be reused. Copying what you see in your own browser
+keeps this free learning project on the safe side. Don't paste names, phone numbers or other personal details."""
 
 HOW_IT_WORKS = """1. A small AI model (66 million parameters) reads each review and tags up to 8 problem types:
    wait time, staff attitude, food quality, order accuracy, price and value, hygiene and safety, ambience, billing and policy.
@@ -310,7 +372,10 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
         d_name = gr.Textbox(label="Restaurant name (optional, only used to label the results)", visible=False,
                                placeholder="e.g. The corner cafe on Main St")
         d_box = gr.Textbox(label="Reviews: one per line, up to 200", lines=8, visible=False,
-                              placeholder="Paste 1-2 star reviews here, one per line.\nExample: Waited 40 minutes for our food.")
+                              placeholder="1. Open the restaurant on Google Maps or Yelp and sort reviews by Newest.\n2. Scroll a little, press Cmd+A then Cmd+C.\n3. Paste here with Cmd+V. We pick out the newest 15 reviews.")
+        with gr.Row():
+            d_page = gr.Checkbox(False, label="I pasted a whole page (pick out the newest 15 reviews)", visible=False)
+            d_neg = gr.Checkbox(False, label="Keep only negative reviews", visible=False)
         with gr.Accordion("Show the demo reviews being analysed", open=False) as d_peek:
             d_shown = gr.Markdown()
         with gr.Accordion("❓ Where do the reviews come from?", open=False):
@@ -319,12 +384,12 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
         gr.Markdown("<small>By using this page you agree to the disclaimer at the bottom.</small>")
         d_tips = gr.Markdown()
         d_chart = gr.Plot(label="What people complain about")
-        d_mode.change(switch_mode, inputs=d_mode, outputs=[d_pick, d_name, d_box, d_peek, d_tips],
+        d_mode.change(switch_mode, inputs=d_mode, outputs=[d_pick, d_name, d_box, d_peek, d_tips, d_page, d_neg],
                           api_visibility="private")
         d_pick.change(load_sample, inputs=d_pick, outputs=[d_box, d_name], api_visibility="private")
         d_box.change(lambda t: "\n".join(f"- {l}" for l in (t or "").splitlines() if l.strip()), inputs=d_box,
                          outputs=d_shown, api_visibility="private")
-        d_run.click(diner_tips, inputs=[d_box, d_name], outputs=[d_tips, d_chart])
+        d_run.click(diner_tips, inputs=[d_box, d_name, d_page, d_neg], outputs=[d_tips, d_chart])
     with gr.Tab("🧑‍🍳 Owner's Fix-It List"):
         gr.Markdown("**Run a restaurant?** Get your **best next action** from this week's 1-2 star reviews.\n\n"
                     "**Step 1.** Choose a demo restaurant, or switch to **Use my own reviews**.  \n"
@@ -335,7 +400,10 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
         o_name = gr.Textbox(label="Restaurant name (optional, only used to label the results)", visible=False,
                                placeholder="e.g. The corner cafe on Main St")
         o_box = gr.Textbox(label="Reviews: one per line, up to 200", lines=8, visible=False,
-                              placeholder="Paste 1-2 star reviews here, one per line.\nExample: Waited 40 minutes for our food.")
+                              placeholder="1. Open the restaurant on Google Maps or Yelp and sort reviews by Newest.\n2. Scroll a little, press Cmd+A then Cmd+C.\n3. Paste here with Cmd+V. We pick out the newest 15 reviews.")
+        with gr.Row():
+            o_page = gr.Checkbox(False, label="I pasted a whole page (pick out the newest 15 reviews)", visible=False)
+            o_neg = gr.Checkbox(False, label="Keep only negative reviews", visible=False)
         with gr.Accordion("Show the demo reviews being analysed", open=False) as o_peek:
             o_shown = gr.Markdown()
         with gr.Accordion("❓ Where do the reviews come from?", open=False):
@@ -345,12 +413,12 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
         o_plan = gr.Markdown()
         o_chart = gr.Plot(label="Complaints this week")
         o_table = gr.Dataframe(label="Each review and the problems found", wrap=True)
-        o_mode.change(switch_mode, inputs=o_mode, outputs=[o_pick, o_name, o_box, o_peek, o_plan],
+        o_mode.change(switch_mode, inputs=o_mode, outputs=[o_pick, o_name, o_box, o_peek, o_plan, o_page, o_neg],
                           api_visibility="private")
         o_pick.change(load_sample, inputs=o_pick, outputs=[o_box, o_name], api_visibility="private")
         o_box.change(lambda t: "\n".join(f"- {l}" for l in (t or "").splitlines() if l.strip()), inputs=o_box,
                          outputs=o_shown, api_visibility="private")
-        o_run.click(owner_report, inputs=[o_box, o_name], outputs=[o_plan, o_chart, o_table])
+        o_run.click(owner_report, inputs=[o_box, o_name, o_page, o_neg], outputs=[o_plan, o_chart, o_table])
     demo.load(load_sample, inputs=d_pick, outputs=[d_box, d_name], api_visibility="private")
     demo.load(load_sample, inputs=o_pick, outputs=[o_box, o_name], api_visibility="private")
     gr.api(tag_review)
