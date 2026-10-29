@@ -63,34 +63,34 @@ DINER_TIPS = {
     "billing_policy": "Billing complaints. Check your bill, and ask about deposits or cancellation rules up front.",
 }
 
-# Fictional restaurants with review sets written for the demo.
+# Sample review sets written for the demo; generic labels, not real businesses.
 SAMPLES = {
-"Tamarind & Tandoor · San Jose, CA · Indian": """The butter chicken was bland and the naan was burnt on one side.
+"Indian restaurant · San Jose, CA": """The butter chicken was bland and the naan was burnt on one side.
 Biryani was dry and the rice tasted reheated.
 Waited 40 minutes for our food on a quiet Tuesday.
 The paneer tikka was cold in the middle.
 Samosas were greasy and stale.""",
-"Pacific Patty Shack · Los Angeles, CA · American": """Waited over an hour for two burgers and fries.
+"Burger spot · Los Angeles, CA": """Waited over an hour for two burgers and fries.
 Nobody took our order for 25 minutes after we sat down.
 The line was out the door and only one cashier was working.
 Our milkshakes took 20 minutes and the burger was overcooked.
 We were seated quickly but then forgotten for half an hour.""",
-"Cascade Pasta Co. · Seattle, WA · Italian": """$34 for a small plate of spaghetti. Not worth it.
+"Italian restaurant · Seattle, WA": """$34 for a small plate of spaghetti. Not worth it.
 Tiny portions for the price, we left hungry.
 The tiramisu was $16 and the size of a matchbox.
 Overpriced wine and the lasagna was just okay.
 Paid $90 for two people and still went for pizza after.""",
-"Pike Spice House · Seattle, WA · Indian": """Ordered lamb vindaloo for delivery and got chicken korma instead.
+"Indian takeout · Seattle, WA": """Ordered lamb vindaloo for delivery and got chicken korma instead.
 Our order was missing the garlic naan and the raita.
 They forgot the rice with both curries.
 Asked for mild and got extra spicy. Wrong order again.
 Half the menu was sold out on a Friday night.""",
-"Mulberry Row Trattoria · New York, NY · Italian": """The waiter rolled his eyes when we asked about gluten-free pasta.
+"Italian trattoria · New York, NY": """The waiter rolled his eyes when we asked about gluten-free pasta.
 Hostess was rude and told us to hurry up and order.
 They charged us for bread we never ordered and the manager refused to remove it.
 Our server was dismissive and never smiled once.
 We were overcharged on the wine and had to argue to get it fixed.""",
-"Hudson Corner Diner · Brooklyn, NY · American": """Found a hair in my pancakes and the table was sticky.
+"Neighborhood diner · Brooklyn, NY": """Found a hair in my pancakes and the table was sticky.
 The restroom was filthy and had no soap.
 Saw a cockroach near the booth by the window.
 Music was so loud we could not hear each other.
@@ -153,7 +153,7 @@ def _table(lines, found):
     return pd.DataFrame({"Review": lines, "Problems": [", ".join(NAMES[l] for l in f) or "None found" for f in found]})
 
 
-EMPTY = "Paste at least one review (one per line), or pick a sample restaurant above."
+EMPTY = "Paste at least one review (one per line), or pick a set of sample reviews above."
 
 NOTE = ("\n\n---\n_Automated estimate from a small AI model. It only reads the text you pasted, can be wrong, "
         "and is not a rating, inspection or endorsement of any business. See the disclaimer below._")
@@ -240,8 +240,8 @@ problem is a wrong order."""
 DISCLAIMER = """**Disclaimer.** This is a free learning project, provided "as is", without warranty of any kind. Results are
 automated estimates from a small AI model trained on public reviews; they can be incomplete or wrong. They reflect only
 the text you paste and are **not** a rating, review, health inspection, or endorsement of any business. This project is
-not affiliated with Yelp, Google, or any restaurant. The sample restaurants and their reviews are **fictional**; any
-resemblance to real businesses is coincidental. Tips and actions are general information, **not** professional, legal,
+not affiliated with Yelp, Google, or any restaurant. The sample reviews were written for this demo and don't describe any
+real business. Tips and actions are general information, **not** professional, legal,
 health, or business advice. For food-safety concerns, check official local health inspection records. Text you paste
 is processed in memory and not saved by this app (the hosting platform may keep standard request logs). Don't paste
 personal information. Model license: CC BY-NC 4.0 (non-commercial). Code: MIT."""
@@ -258,11 +258,11 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
     )
     with gr.Tab("🧭 Before You Book (diners)"):
         gr.Markdown("**Planning a meal out?** See what unhappy guests complained about, with a tip for each.\n\n"
-                    "**Step 1.** Pick a sample restaurant, or click **Type my own** and paste reviews.  \n"
+                    "**Step 1.** Pick a set of sample reviews, or click **Type my own** and paste reviews.  \n"
                     "**Step 2.** Click **Show me what to expect**.  \n"
                     "**Step 3.** Read the tips and the chart.")
         with gr.Row():
-            d_pick = gr.Dropdown(list(SAMPLES), label="Sample restaurants (fictional)", value=None, scale=3)
+            d_pick = gr.Dropdown(list(SAMPLES), label="Sample reviews", value=None, scale=3)
             d_own = gr.Button("✍️ Type my own", scale=1)
         with gr.Accordion("❓ How does it find the restaurant?", open=False):
             gr.Markdown(HOW_IT_FINDS)
@@ -276,11 +276,11 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
         d_run.click(diner_tips, inputs=d_box, outputs=[d_tips, d_chart])
     with gr.Tab("🧑‍🍳 Owner's Fix-It List"):
         gr.Markdown("**Run a restaurant?** Paste this week's 1-2 star reviews and get your **best next action**.\n\n"
-                    "**Step 1.** Pick a sample restaurant, or click **Type my own** and paste your reviews.  \n"
+                    "**Step 1.** Pick a set of sample reviews, or click **Type my own** and paste your reviews.  \n"
                     "**Step 2.** Click **Find my best next action**.  \n"
                     "**Step 3.** Start with the action at the top; the chart and table show the evidence.")
         with gr.Row():
-            o_pick = gr.Dropdown(list(SAMPLES), label="Sample restaurants (fictional)", value=None, scale=3)
+            o_pick = gr.Dropdown(list(SAMPLES), label="Sample reviews", value=None, scale=3)
             o_own = gr.Button("✍️ Type my own", scale=1)
         with gr.Accordion("❓ Where do I get my reviews?", open=False):
             gr.Markdown(HOW_IT_FINDS)
@@ -299,7 +299,7 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
     with gr.Accordion("⚖️ Disclaimer and privacy", open=False):
         gr.Markdown(DISCLAIMER)
     gr.Markdown("_Automated estimates; accuracy varies. Not affiliated with Yelp, Google or any restaurant. "
-                "Samples are fictional. Not professional advice. Open **Disclaimer and privacy** above for details._")
+                "Sample reviews were written for this demo. Not professional advice. Open **Disclaimer and privacy** above for details._")
 
 if __name__ == "__main__":
     demo.launch(mcp_server=True, theme=THEME)

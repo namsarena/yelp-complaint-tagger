@@ -1,0 +1,74 @@
+{
+  "bat_pass": 10,
+  "bat_total": 10,
+  "bat": [
+    {
+      "check": "tag_review answers with known labels",
+      "pass": true,
+      "detail": "{'wait_time': 0.99, 'food_quality': 0.83} in 2.93s"
+    },
+    {
+      "check": "/owner_report returns its section",
+      "pass": true,
+      "detail": "0.68s"
+    },
+    {
+      "check": "/owner_report carries the disclaimer note",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "/diner_tips returns its section",
+      "pass": true,
+      "detail": "0.62s"
+    },
+    {
+      "check": "/diner_tips carries the disclaimer note",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "empty input is handled",
+      "pass": true,
+      "detail": "0.6s"
+    },
+    {
+      "check": "happy review shows no crash",
+      "pass": true,
+      "detail": "0.6s"
+    },
+    {
+      "check": "emoji and accents are handled",
+      "pass": true,
+      "detail": "0.6s"
+    },
+    {
+      "check": "very long review is accepted",
+      "pass": true,
+      "detail": "0.63s"
+    },
+    {
+      "check": "caps input at 200 reviews",
+      "pass": true,
+      "detail": "rows=200 in 1.26s"
+    }
+  ],
+  "uat_owner_pass": 84,
+  "uat_diner_pass": 110,
+  "uat_total": 110,
+  "errors": 0,
+  "by_main_problem": {
+    "wait_time": "14/14",
+    "staff_attitude": "14/14",
+    "food_quality": "14/14",
+    "order_accuracy": "1/14",
+    "price_value": "8/14",
+    "hygiene_safety": "14/14",
+    "ambience": "10/13",
+    "billing_policy": "9/13"
+  },
+  "median_secs_owner": 0.66,
+  "max_secs_owner": 1.66,
+  "comment": "It's strong on wait time, staff, food and hygiene, and weakest on wrong orders, where it usually blames the food instead. That's the first thing on my improvement list.",
+  "diner_metric": "main problem appears in the diner's top 3 tips"
+}

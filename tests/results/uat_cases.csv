@@ -1,0 +1,551 @@
+id,place,restaurant,cuisine,main,others,reviews,top,owner_pass,diner_pass,secs_owner,secs_diner,error
+1,Alabama,Copper Kitchen,Indian,wait_time,"ambience,staff_attitude","It took 45 minutes to get our butter chicken on a slow night.
+Nobody came to our table for 30 minutes.
+Our server was rude and rolled his eyes at us.
+Waited over an hour for the butter chicken.
+The music was so loud we couldn't talk.",wait time,True,True,0.61,0.61,
+2,Alabama,Juniper Kitchen,Italian,staff_attitude,"food_quality,billing_policy","They wouldn't honor the coupon and overcharged us.
+The hostess snapped at us for asking for a different table.
+Soggy lasagna with no flavor at all.
+Our server was rude and rolled his eyes at us.
+Staff were unfriendly and ignored our questions.",staff attitude,True,True,0.66,0.63,
+3,Alaska,Harbor Kitchen,American,food_quality,"order_accuracy,billing_policy","We ordered the BBQ ribs and got a completely different dish.
+The cheeseburger was bland and cold.
+The manager refused a refund for a wrong charge.
+My cheeseburger was overcooked and dry.
+Soggy BBQ ribs with no flavor at all.",food quality,True,True,0.67,0.62,
+4,Alaska,Maple Table,Mexican,order_accuracy,"hygiene_safety,wait_time","Waited over an hour for the carne asada tacos.
+The tables were sticky and the restroom was filthy.
+I asked for no onions and they still put onions on everything.
+Our takeout bag was missing the burrito.
+We ordered the enchiladas and got a completely different dish.",food quality,False,True,0.65,0.68,
+5,Arizona,Saffron Table,Chinese,price_value,"billing_policy,wait_time","Way overpriced for such small portions.
+The manager refused a refund for a wrong charge.
+Nobody came to our table for 30 minutes.
+Paid a fortune and still left hungry.
+The kung pao chicken cost twice what it should.",price and value,True,True,0.67,0.66,
+6,Arizona,Cedar Table,Thai,hygiene_safety,"price_value,ambience","Way overpriced for such small portions.
+Got food poisoning after eating the spring rolls.
+The room smelled like old grease and the lighting was harsh.
+The tables were sticky and the restroom was filthy.
+Found a hair in my green curry.",hygiene and safety,True,True,0.73,0.62,
+7,Arkansas,Lantern Bistro,Japanese,ambience,"food_quality,wait_time","We sat forever before anyone took our order.
+Soggy chicken katsu with no flavor at all.
+It was freezing inside and the chairs were uncomfortable.
+The room smelled like old grease and the lighting was harsh.
+Tables were crammed together and the room was chaotic and noisy.",ambience,True,True,0.71,0.66,
+8,Arkansas,Willow Bistro,Mediterranean,billing_policy,"hygiene_safety,price_value","They wouldn't honor the coupon and overcharged us.
+Got food poisoning after eating the falafel wrap.
+They added a surprise service fee and refused to remove it.
+$40 for a tiny portion of falafel wrap. Not worth it.
+The manager refused a refund for a wrong charge.",billing and policy,True,True,0.67,0.67,
+9,California,Granite Bistro,Indian,wait_time,"hygiene_safety,staff_attitude","We sat forever before anyone took our order.
+Nobody came to our table for 30 minutes.
+Found a hair in my garlic naan.
+It took 45 minutes to get our garlic naan on a slow night.
+Our server was rude and rolled his eyes at us.",wait time,True,True,0.59,0.69,
+10,California,Marigold House,Italian,staff_attitude,"wait_time,order_accuracy","Our server was rude and rolled his eyes at us.
+Our takeout bag was missing the margherita pizza.
+It took 45 minutes to get our margherita pizza on a slow night.
+The manager was dismissive when we asked about the margherita pizza.
+Staff were unfriendly and ignored our questions.",staff attitude,True,True,0.68,0.66,
+11,Colorado,Pepper House,American,food_quality,"staff_attitude,order_accuracy","They forgot half of our order.
+The BBQ ribs was bland and cold.
+Our server was rude and rolled his eyes at us.
+My mac and cheese was overcooked and dry.
+The BBQ ribs tasted stale, like it was made yesterday.",food quality,True,True,0.62,0.61,
+12,Colorado,Sundial House,Mexican,order_accuracy,"wait_time,ambience","I asked for no onions and they still put onions on everything.
+Nobody came to our table for 30 minutes.
+They forgot half of our order.
+We ordered the enchiladas and got a completely different dish.
+Tables were crammed together and the room was chaotic and noisy.",food quality,False,True,0.66,0.66,
+13,Connecticut,Copper Corner,Chinese,price_value,"order_accuracy,ambience","We ordered the dumplings and got a completely different dish.
+The kung pao chicken cost twice what it should.
+Paid a fortune and still left hungry.
+Way overpriced for such small portions.
+The music was so loud we couldn't talk.",food quality,False,True,1.66,0.62,
+14,Connecticut,Juniper Corner,Thai,hygiene_safety,"wait_time,billing_policy","Found a hair in my pad thai.
+Nobody came to our table for 30 minutes.
+Saw a cockroach near the kitchen door.
+Got food poisoning after eating the green curry.
+They wouldn't honor the coupon and overcharged us.",hygiene and safety,True,True,0.66,0.6,
+15,Delaware,Harbor Corner,Japanese,ambience,"staff_attitude,order_accuracy","The room smelled like old grease and the lighting was harsh.
+The music was so loud we couldn't talk.
+The hostess snapped at us for asking for a different table.
+I asked for no onions and they still put onions on everything.
+Tables were crammed together and the room was chaotic and noisy.",ambience,True,True,0.67,0.68,
+16,Delaware,Maple Canteen,Mediterranean,billing_policy,"hygiene_safety,food_quality","The manager refused a refund for a wrong charge.
+My lamb gyro was overcooked and dry.
+They charged us twice for the falafel wrap.
+They wouldn't honor the coupon and overcharged us.
+The tables were sticky and the restroom was filthy.",billing and policy,True,True,0.66,0.66,
+17,Florida,Saffron Canteen,Indian,wait_time,"billing_policy,hygiene_safety","It took 45 minutes to get our butter chicken on a slow night.
+We sat forever before anyone took our order.
+Got food poisoning after eating the butter chicken.
+Waited over an hour for the butter chicken.
+They wouldn't honor the coupon and overcharged us.",wait time,True,True,0.66,0.65,
+18,Florida,Cedar Canteen,Italian,staff_attitude,"wait_time,price_value","Way overpriced for such small portions.
+We sat forever before anyone took our order.
+Staff were unfriendly and ignored our questions.
+The hostess snapped at us for asking for a different table.
+The manager was dismissive when we asked about the margherita pizza.",staff attitude,True,True,0.62,0.62,
+19,Georgia,Lantern Grill,American,food_quality,"ambience,order_accuracy","Soggy mac and cheese with no flavor at all.
+The music was so loud we couldn't talk.
+My cheeseburger was overcooked and dry.
+We ordered the cheeseburger and got a completely different dish.
+The mac and cheese was bland and cold.",food quality,True,True,0.62,0.6,
+20,Georgia,Willow Grill,Mexican,order_accuracy,"price_value,wait_time","Our takeout bag was missing the enchiladas.
+Nobody came to our table for 30 minutes.
+The burrito cost twice what it should.
+They forgot half of our order.
+We ordered the burrito and got a completely different dish.",food quality,False,True,0.69,0.66,
+21,Hawaii,Granite Grill,Chinese,price_value,"staff_attitude,ambience","It was freezing inside and the chairs were uncomfortable.
+The kung pao chicken cost twice what it should.
+Our server was rude and rolled his eyes at us.
+Way overpriced for such small portions.
+Paid a fortune and still left hungry.",price and value,True,True,0.66,0.66,
+22,Hawaii,Marigold Eatery,Thai,hygiene_safety,"staff_attitude,food_quality","The tables were sticky and the restroom was filthy.
+The spring rolls tasted stale, like it was made yesterday.
+Our server was rude and rolled his eyes at us.
+Found a hair in my spring rolls.
+Saw a cockroach near the kitchen door.",hygiene and safety,True,True,0.66,0.61,
+23,Idaho,Pepper Eatery,Japanese,ambience,"wait_time,hygiene_safety","Tables were crammed together and the room was chaotic and noisy.
+Saw a cockroach near the kitchen door.
+It was freezing inside and the chairs were uncomfortable.
+The room smelled like old grease and the lighting was harsh.
+It took 45 minutes to get our ramen on a slow night.",ambience,True,True,0.62,0.62,
+24,Idaho,Sundial Eatery,Mediterranean,billing_policy,"hygiene_safety,order_accuracy","They charged us twice for the falafel wrap.
+They wouldn't honor the coupon and overcharged us.
+I asked for no onions and they still put onions on everything.
+The manager refused a refund for a wrong charge.
+Saw a cockroach near the kitchen door.",billing and policy,True,True,0.65,0.68,
+25,Illinois,Copper Kitchen,Indian,wait_time,"ambience,food_quality","The room smelled like old grease and the lighting was harsh.
+Waited over an hour for the biryani.
+We sat forever before anyone took our order.
+The biryani was bland and cold.
+Nobody came to our table for 30 minutes.",wait time,True,True,0.65,0.61,
+26,Illinois,Juniper Kitchen,Italian,staff_attitude,"order_accuracy,hygiene_safety","The hostess snapped at us for asking for a different table.
+Staff were unfriendly and ignored our questions.
+The tables were sticky and the restroom was filthy.
+I asked for no onions and they still put onions on everything.
+Our server was rude and rolled his eyes at us.",staff attitude,True,True,0.65,0.65,
+27,Indiana,Harbor Kitchen,American,food_quality,"order_accuracy,staff_attitude","The hostess snapped at us for asking for a different table.
+I asked for no onions and they still put onions on everything.
+Soggy cheeseburger with no flavor at all.
+The BBQ ribs was bland and cold.
+My cheeseburger was overcooked and dry.",food quality,True,True,0.66,0.64,
+28,Indiana,Maple Table,Mexican,order_accuracy,"price_value,food_quality","Paid a fortune and still left hungry.
+We ordered the enchiladas and got a completely different dish.
+The carne asada tacos tasted stale, like it was made yesterday.
+Our takeout bag was missing the enchiladas.
+They forgot half of our order.",food quality,False,True,0.68,0.6,
+29,Iowa,Saffron Table,Chinese,price_value,"wait_time,billing_policy","Way overpriced for such small portions.
+The fried rice cost twice what it should.
+They added a surprise service fee and refused to remove it.
+Waited over an hour for the dumplings.
+Paid a fortune and still left hungry.",price and value,True,True,0.66,0.67,
+30,Iowa,Cedar Table,Thai,hygiene_safety,"food_quality,order_accuracy","Found a hair in my spring rolls.
+They forgot half of our order.
+Saw a cockroach near the kitchen door.
+The spring rolls was bland and cold.
+The tables were sticky and the restroom was filthy.",hygiene and safety,True,True,0.65,0.6,
+31,Kansas,Lantern Bistro,Japanese,ambience,"hygiene_safety,food_quality","The tables were sticky and the restroom was filthy.
+Tables were crammed together and the room was chaotic and noisy.
+The music was so loud we couldn't talk.
+It was freezing inside and the chairs were uncomfortable.
+The sushi rolls tasted stale, like it was made yesterday.",ambience,True,True,0.6,0.66,
+32,Kansas,Willow Bistro,Mediterranean,billing_policy,"staff_attitude,order_accuracy","Our takeout bag was missing the hummus plate.
+They added a surprise service fee and refused to remove it.
+Staff were unfriendly and ignored our questions.
+They wouldn't honor the coupon and overcharged us.
+The manager refused a refund for a wrong charge.",staff attitude,False,True,0.66,0.71,
+33,Kentucky,Granite Bistro,Indian,wait_time,"staff_attitude,food_quality","It took 45 minutes to get our butter chicken on a slow night.
+The biryani was bland and cold.
+We sat forever before anyone took our order.
+Waited over an hour for the butter chicken.
+The manager was dismissive when we asked about the biryani.",wait time,True,True,0.62,0.55,
+34,Kentucky,Marigold House,Italian,staff_attitude,"price_value,billing_policy","The hostess snapped at us for asking for a different table.
+Way overpriced for such small portions.
+The manager was dismissive when we asked about the lasagna.
+Our server was rude and rolled his eyes at us.
+They wouldn't honor the coupon and overcharged us.",staff attitude,True,True,0.61,0.6,
+35,Louisiana,Pepper House,American,food_quality,"staff_attitude,price_value","My BBQ ribs was overcooked and dry.
+The mac and cheese tasted stale, like it was made yesterday.
+The cheeseburger cost twice what it should.
+Staff were unfriendly and ignored our questions.
+Soggy cheeseburger with no flavor at all.",food quality,True,True,0.61,0.61,
+36,Louisiana,Sundial House,Mexican,order_accuracy,"food_quality,price_value","Our takeout bag was missing the burrito.
+We ordered the carne asada tacos and got a completely different dish.
+The enchiladas tasted stale, like it was made yesterday.
+$40 for a tiny portion of carne asada tacos. Not worth it.
+They forgot half of our order.",food quality,False,True,0.61,0.61,
+37,Maine,Copper Corner,Chinese,price_value,"ambience,staff_attitude","The manager was dismissive when we asked about the dumplings.
+Way overpriced for such small portions.
+The dumplings cost twice what it should.
+$40 for a tiny portion of dumplings. Not worth it.
+Tables were crammed together and the room was chaotic and noisy.",price and value,True,True,0.66,0.61,
+38,Maine,Juniper Corner,Thai,hygiene_safety,"order_accuracy,wait_time","Got food poisoning after eating the spring rolls.
+The tables were sticky and the restroom was filthy.
+Saw a cockroach near the kitchen door.
+Nobody came to our table for 30 minutes.
+Our takeout bag was missing the green curry.",hygiene and safety,True,True,0.65,0.67,
+39,Maryland,Harbor Corner,Japanese,ambience,"food_quality,hygiene_safety","The music was so loud we couldn't talk.
+Tables were crammed together and the room was chaotic and noisy.
+Found a hair in my ramen.
+The room smelled like old grease and the lighting was harsh.
+The sushi rolls was bland and cold.",ambience,True,True,0.69,0.65,
+40,Maryland,Maple Canteen,Mediterranean,billing_policy,"wait_time,food_quality","They added a surprise service fee and refused to remove it.
+They charged us twice for the lamb gyro.
+Soggy lamb gyro with no flavor at all.
+We sat forever before anyone took our order.
+They wouldn't honor the coupon and overcharged us.",billing and policy,True,True,0.64,0.65,
+41,Massachusetts,Saffron Canteen,Indian,wait_time,"order_accuracy,food_quality","My butter chicken was overcooked and dry.
+Waited over an hour for the butter chicken.
+We sat forever before anyone took our order.
+We ordered the garlic naan and got a completely different dish.
+It took 45 minutes to get our butter chicken on a slow night.",wait time,True,True,0.65,0.56,
+42,Massachusetts,Cedar Canteen,Italian,staff_attitude,"hygiene_safety,food_quality","Found a hair in my lasagna.
+The manager was dismissive when we asked about the margherita pizza.
+The hostess snapped at us for asking for a different table.
+Staff were unfriendly and ignored our questions.
+The lasagna tasted stale, like it was made yesterday.",staff attitude,True,True,0.65,0.6,
+43,Michigan,Lantern Grill,American,food_quality,"price_value,ambience","My cheeseburger was overcooked and dry.
+The mac and cheese was bland and cold.
+The BBQ ribs tasted stale, like it was made yesterday.
+$40 for a tiny portion of mac and cheese. Not worth it.
+The music was so loud we couldn't talk.",food quality,True,True,0.61,0.61,
+44,Michigan,Willow Grill,Mexican,order_accuracy,"wait_time,hygiene_safety","Our takeout bag was missing the burrito.
+Got food poisoning after eating the enchiladas.
+They forgot half of our order.
+It took 45 minutes to get our enchiladas on a slow night.
+We ordered the carne asada tacos and got a completely different dish.",food quality,False,True,0.67,0.68,
+45,Minnesota,Granite Grill,Chinese,price_value,"hygiene_safety,billing_policy","Paid a fortune and still left hungry.
+The dumplings cost twice what it should.
+They charged us twice for the dumplings.
+Way overpriced for such small portions.
+Saw a cockroach near the kitchen door.",price and value,True,True,0.65,0.68,
+46,Minnesota,Marigold Eatery,Thai,hygiene_safety,"food_quality,wait_time","The tables were sticky and the restroom was filthy.
+The green curry tasted stale, like it was made yesterday.
+It took 45 minutes to get our spring rolls on a slow night.
+Got food poisoning after eating the green curry.
+Found a hair in my green curry.",hygiene and safety,True,True,0.67,0.6,
+47,Mississippi,Pepper Eatery,Japanese,ambience,"wait_time,staff_attitude","Our server was rude and rolled his eyes at us.
+Tables were crammed together and the room was chaotic and noisy.
+We sat forever before anyone took our order.
+It was freezing inside and the chairs were uncomfortable.
+The music was so loud we couldn't talk.",staff attitude,False,True,0.65,0.61,
+48,Mississippi,Sundial Eatery,Mediterranean,billing_policy,"food_quality,hygiene_safety","They added a surprise service fee and refused to remove it.
+The lamb gyro tasted stale, like it was made yesterday.
+The manager refused a refund for a wrong charge.
+Got food poisoning after eating the lamb gyro.
+They wouldn't honor the coupon and overcharged us.",billing and policy,True,True,0.71,0.66,
+49,Missouri,Copper Kitchen,Indian,wait_time,"ambience,food_quality","Tables were crammed together and the room was chaotic and noisy.
+The butter chicken tasted stale, like it was made yesterday.
+It took 45 minutes to get our butter chicken on a slow night.
+We sat forever before anyone took our order.
+Waited over an hour for the butter chicken.",wait time,True,True,0.62,0.6,
+50,Missouri,Juniper Kitchen,Italian,staff_attitude,"food_quality,order_accuracy","Staff were unfriendly and ignored our questions.
+The hostess snapped at us for asking for a different table.
+Our takeout bag was missing the margherita pizza.
+Our server was rude and rolled his eyes at us.
+The margherita pizza tasted stale, like it was made yesterday.",staff attitude,True,True,0.69,0.58,
+51,Montana,Harbor Kitchen,American,food_quality,"price_value,billing_policy","My BBQ ribs was overcooked and dry.
+The BBQ ribs was bland and cold.
+$40 for a tiny portion of cheeseburger. Not worth it.
+They wouldn't honor the coupon and overcharged us.
+Soggy cheeseburger with no flavor at all.",food quality,True,True,0.61,0.59,
+52,Montana,Maple Table,Mexican,order_accuracy,"billing_policy,hygiene_safety","They forgot half of our order.
+We ordered the enchiladas and got a completely different dish.
+Got food poisoning after eating the burrito.
+I asked for no onions and they still put onions on everything.
+They added a surprise service fee and refused to remove it.",order accuracy,True,True,0.61,0.67,
+53,Nebraska,Saffron Table,Chinese,price_value,"food_quality,hygiene_safety","The fried rice tasted stale, like it was made yesterday.
+$40 for a tiny portion of kung pao chicken. Not worth it.
+Paid a fortune and still left hungry.
+Found a hair in my kung pao chicken.
+The fried rice cost twice what it should.",food quality,False,True,0.65,0.61,
+54,Nebraska,Cedar Table,Thai,hygiene_safety,"staff_attitude,wait_time","The tables were sticky and the restroom was filthy.
+It took 45 minutes to get our spring rolls on a slow night.
+Saw a cockroach near the kitchen door.
+Got food poisoning after eating the green curry.
+The hostess snapped at us for asking for a different table.",hygiene and safety,True,True,0.65,0.77,
+55,Nevada,Lantern Bistro,Japanese,ambience,"food_quality,hygiene_safety","The tables were sticky and the restroom was filthy.
+The music was so loud we couldn't talk.
+My sushi rolls was overcooked and dry.
+Tables were crammed together and the room was chaotic and noisy.
+It was freezing inside and the chairs were uncomfortable.",ambience,True,True,0.65,0.7,
+56,Nevada,Willow Bistro,Mediterranean,billing_policy,"order_accuracy,wait_time","Waited over an hour for the hummus plate.
+The manager refused a refund for a wrong charge.
+They added a surprise service fee and refused to remove it.
+I asked for no onions and they still put onions on everything.
+They wouldn't honor the coupon and overcharged us.",billing and policy,True,True,0.68,0.83,
+57,New Hampshire,Granite Bistro,Indian,wait_time,"hygiene_safety,order_accuracy","They forgot half of our order.
+It took 45 minutes to get our garlic naan on a slow night.
+Found a hair in my garlic naan.
+We sat forever before anyone took our order.
+Waited over an hour for the garlic naan.",wait time,True,True,0.66,0.64,
+58,New Hampshire,Marigold House,Italian,staff_attitude,"order_accuracy,food_quality","The margherita pizza tasted stale, like it was made yesterday.
+The manager was dismissive when we asked about the carbonara.
+I asked for no onions and they still put onions on everything.
+The hostess snapped at us for asking for a different table.
+Staff were unfriendly and ignored our questions.",staff attitude,True,True,0.61,0.6,
+59,New Jersey,Pepper House,American,food_quality,"ambience,price_value","Soggy cheeseburger with no flavor at all.
+The BBQ ribs cost twice what it should.
+My BBQ ribs was overcooked and dry.
+The music was so loud we couldn't talk.
+The mac and cheese tasted stale, like it was made yesterday.",food quality,True,True,0.62,0.67,
+60,New Jersey,Sundial House,Mexican,order_accuracy,"ambience,hygiene_safety","Got food poisoning after eating the carne asada tacos.
+I asked for no onions and they still put onions on everything.
+Tables were crammed together and the room was chaotic and noisy.
+We ordered the burrito and got a completely different dish.
+Our takeout bag was missing the enchiladas.",food quality,False,True,0.66,0.66,
+61,New Mexico,Copper Corner,Chinese,price_value,"food_quality,order_accuracy","$40 for a tiny portion of fried rice. Not worth it.
+The kung pao chicken cost twice what it should.
+We ordered the fried rice and got a completely different dish.
+Paid a fortune and still left hungry.
+My dumplings was overcooked and dry.",food quality,False,True,0.66,0.6,
+62,New Mexico,Juniper Corner,Thai,hygiene_safety,"order_accuracy,wait_time","Saw a cockroach near the kitchen door.
+The tables were sticky and the restroom was filthy.
+We sat forever before anyone took our order.
+Got food poisoning after eating the spring rolls.
+I asked for no onions and they still put onions on everything.",hygiene and safety,True,True,0.72,0.68,
+63,New York,Harbor Corner,Japanese,ambience,"price_value,billing_policy","The manager refused a refund for a wrong charge.
+The music was so loud we couldn't talk.
+It was freezing inside and the chairs were uncomfortable.
+The ramen cost twice what it should.
+Tables were crammed together and the room was chaotic and noisy.",ambience,True,True,0.66,0.67,
+64,New York,Maple Canteen,Mediterranean,billing_policy,"price_value,order_accuracy","I asked for no onions and they still put onions on everything.
+They wouldn't honor the coupon and overcharged us.
+They added a surprise service fee and refused to remove it.
+The manager refused a refund for a wrong charge.
+Way overpriced for such small portions.",billing and policy,True,True,0.67,0.66,
+65,North Carolina,Saffron Canteen,Indian,wait_time,"ambience,price_value","It took 45 minutes to get our butter chicken on a slow night.
+Waited over an hour for the butter chicken.
+We sat forever before anyone took our order.
+The room smelled like old grease and the lighting was harsh.
+Paid a fortune and still left hungry.",wait time,True,True,0.63,0.67,
+66,North Carolina,Cedar Canteen,Italian,staff_attitude,"price_value,ambience","The manager was dismissive when we asked about the carbonara.
+Staff were unfriendly and ignored our questions.
+Our server was rude and rolled his eyes at us.
+Paid a fortune and still left hungry.
+The music was so loud we couldn't talk.",staff attitude,True,True,0.67,0.65,
+67,North Dakota,Lantern Grill,American,food_quality,"billing_policy,hygiene_safety","Soggy mac and cheese with no flavor at all.
+The manager refused a refund for a wrong charge.
+The mac and cheese tasted stale, like it was made yesterday.
+Found a hair in my BBQ ribs.
+The cheeseburger was bland and cold.",food quality,True,True,0.68,0.67,
+68,North Dakota,Willow Grill,Mexican,order_accuracy,"ambience,food_quality","I asked for no onions and they still put onions on everything.
+We ordered the carne asada tacos and got a completely different dish.
+Our takeout bag was missing the burrito.
+The room smelled like old grease and the lighting was harsh.
+My carne asada tacos was overcooked and dry.",food quality,False,True,0.69,0.68,
+69,Ohio,Granite Grill,Chinese,price_value,"staff_attitude,billing_policy","$40 for a tiny portion of fried rice. Not worth it.
+They added a surprise service fee and refused to remove it.
+The fried rice cost twice what it should.
+Way overpriced for such small portions.
+Staff were unfriendly and ignored our questions.",price and value,True,True,0.65,0.67,
+70,Ohio,Marigold Eatery,Thai,hygiene_safety,"ambience,wait_time","We sat forever before anyone took our order.
+Got food poisoning after eating the pad thai.
+The tables were sticky and the restroom was filthy.
+The room smelled like old grease and the lighting was harsh.
+Found a hair in my green curry.",hygiene and safety,True,True,0.68,0.67,
+71,Oklahoma,Pepper Eatery,Japanese,ambience,"order_accuracy,billing_policy","Tables were crammed together and the room was chaotic and noisy.
+The manager refused a refund for a wrong charge.
+The music was so loud we couldn't talk.
+It was freezing inside and the chairs were uncomfortable.
+They forgot half of our order.",ambience,True,True,0.66,0.69,
+72,Oklahoma,Sundial Eatery,Mediterranean,billing_policy,"price_value,hygiene_safety","Saw a cockroach near the kitchen door.
+Way overpriced for such small portions.
+They charged us twice for the falafel wrap.
+They wouldn't honor the coupon and overcharged us.
+They added a surprise service fee and refused to remove it.",price and value,False,True,0.65,0.61,
+73,Oregon,Copper Kitchen,Indian,wait_time,"order_accuracy,price_value","Waited over an hour for the garlic naan.
+They forgot half of our order.
+Nobody came to our table for 30 minutes.
+Paid a fortune and still left hungry.
+It took 45 minutes to get our butter chicken on a slow night.",wait time,True,True,0.66,0.63,
+74,Oregon,Juniper Kitchen,Italian,staff_attitude,"hygiene_safety,billing_policy","The hostess snapped at us for asking for a different table.
+Saw a cockroach near the kitchen door.
+The manager was dismissive when we asked about the margherita pizza.
+They wouldn't honor the coupon and overcharged us.
+Our server was rude and rolled his eyes at us.",staff attitude,True,True,0.67,0.65,
+75,Pennsylvania,Harbor Kitchen,American,food_quality,"billing_policy,hygiene_safety","The cheeseburger tasted stale, like it was made yesterday.
+The BBQ ribs was bland and cold.
+Saw a cockroach near the kitchen door.
+They charged us twice for the BBQ ribs.
+My mac and cheese was overcooked and dry.",food quality,True,True,0.64,0.61,
+76,Pennsylvania,Maple Table,Mexican,order_accuracy,"wait_time,ambience","Our takeout bag was missing the enchiladas.
+I asked for no onions and they still put onions on everything.
+The music was so loud we couldn't talk.
+We ordered the burrito and got a completely different dish.
+Nobody came to our table for 30 minutes.",food quality,False,True,0.66,0.67,
+77,Rhode Island,Saffron Table,Chinese,price_value,"wait_time,staff_attitude","$40 for a tiny portion of dumplings. Not worth it.
+Paid a fortune and still left hungry.
+The manager was dismissive when we asked about the dumplings.
+Way overpriced for such small portions.
+Nobody came to our table for 30 minutes.",price and value,True,True,0.68,0.8,
+78,Rhode Island,Cedar Table,Thai,hygiene_safety,"price_value,ambience","Found a hair in my green curry.
+Got food poisoning after eating the spring rolls.
+The tables were sticky and the restroom was filthy.
+The room smelled like old grease and the lighting was harsh.
+The pad thai cost twice what it should.",hygiene and safety,True,True,0.68,0.65,
+79,South Carolina,Lantern Bistro,Japanese,ambience,"wait_time,hygiene_safety","It was freezing inside and the chairs were uncomfortable.
+Got food poisoning after eating the ramen.
+Nobody came to our table for 30 minutes.
+The room smelled like old grease and the lighting was harsh.
+Tables were crammed together and the room was chaotic and noisy.",hygiene and safety,False,True,0.67,0.61,
+80,South Carolina,Willow Bistro,Mediterranean,billing_policy,"staff_attitude,ambience","They added a surprise service fee and refused to remove it.
+The hostess snapped at us for asking for a different table.
+The manager refused a refund for a wrong charge.
+The music was so loud we couldn't talk.
+They charged us twice for the falafel wrap.",staff attitude,False,True,0.67,0.66,
+81,South Dakota,Granite Bistro,Indian,wait_time,"billing_policy,food_quality","The butter chicken tasted stale, like it was made yesterday.
+They added a surprise service fee and refused to remove it.
+Waited over an hour for the butter chicken.
+We sat forever before anyone took our order.
+It took 45 minutes to get our butter chicken on a slow night.",wait time,True,True,0.67,0.64,
+82,South Dakota,Marigold House,Italian,staff_attitude,"ambience,price_value","The music was so loud we couldn't talk.
+Way overpriced for such small portions.
+The hostess snapped at us for asking for a different table.
+Staff were unfriendly and ignored our questions.
+Our server was rude and rolled his eyes at us.",staff attitude,True,True,0.61,0.61,
+83,Tennessee,Pepper House,American,food_quality,"wait_time,price_value","The BBQ ribs was bland and cold.
+The mac and cheese cost twice what it should.
+Waited over an hour for the cheeseburger.
+Soggy BBQ ribs with no flavor at all.
+My mac and cheese was overcooked and dry.",food quality,True,True,0.62,0.6,
+84,Tennessee,Sundial House,Mexican,order_accuracy,"hygiene_safety,ambience","They forgot half of our order.
+I asked for no onions and they still put onions on everything.
+Got food poisoning after eating the carne asada tacos.
+Our takeout bag was missing the enchiladas.
+The music was so loud we couldn't talk.",food quality,False,True,0.66,0.65,
+85,Texas,Copper Corner,Chinese,price_value,"staff_attitude,order_accuracy","The hostess snapped at us for asking for a different table.
+Way overpriced for such small portions.
+The dumplings cost twice what it should.
+They forgot half of our order.
+Paid a fortune and still left hungry.",price and value,True,True,0.56,0.59,
+86,Texas,Juniper Corner,Thai,hygiene_safety,"wait_time,billing_policy","Got food poisoning after eating the spring rolls.
+Found a hair in my pad thai.
+It took 45 minutes to get our pad thai on a slow night.
+The tables were sticky and the restroom was filthy.
+They charged us twice for the spring rolls.",hygiene and safety,True,True,0.72,0.67,
+87,Utah,Harbor Corner,Japanese,ambience,"order_accuracy,food_quality","The music was so loud we couldn't talk.
+My ramen was overcooked and dry.
+Tables were crammed together and the room was chaotic and noisy.
+The room smelled like old grease and the lighting was harsh.
+They forgot half of our order.",ambience,True,True,0.68,0.67,
+88,Utah,Maple Canteen,Mediterranean,billing_policy,"ambience,price_value","The manager refused a refund for a wrong charge.
+The falafel wrap cost twice what it should.
+The music was so loud we couldn't talk.
+They added a surprise service fee and refused to remove it.
+They charged us twice for the falafel wrap.",billing and policy,True,True,0.66,0.66,
+89,Vermont,Saffron Canteen,Indian,wait_time,"order_accuracy,billing_policy","Waited over an hour for the garlic naan.
+It took 45 minutes to get our biryani on a slow night.
+We ordered the butter chicken and got a completely different dish.
+We sat forever before anyone took our order.
+They charged us twice for the butter chicken.",wait time,True,True,0.66,0.65,
+90,Vermont,Cedar Canteen,Italian,staff_attitude,"price_value,order_accuracy","Staff were unfriendly and ignored our questions.
+$40 for a tiny portion of lasagna. Not worth it.
+The hostess snapped at us for asking for a different table.
+The manager was dismissive when we asked about the margherita pizza.
+Our takeout bag was missing the lasagna.",staff attitude,True,True,0.69,0.64,
+91,Virginia,Lantern Grill,American,food_quality,"order_accuracy,price_value","Soggy BBQ ribs with no flavor at all.
+My BBQ ribs was overcooked and dry.
+Paid a fortune and still left hungry.
+We ordered the BBQ ribs and got a completely different dish.
+The cheeseburger tasted stale, like it was made yesterday.",food quality,True,True,0.61,0.61,
+92,Virginia,Willow Grill,Mexican,order_accuracy,"wait_time,staff_attitude","The hostess snapped at us for asking for a different table.
+They forgot half of our order.
+Nobody came to our table for 30 minutes.
+I asked for no onions and they still put onions on everything.
+We ordered the burrito and got a completely different dish.",food quality,False,True,0.66,0.61,
+93,Washington,Granite Grill,Chinese,price_value,"ambience,order_accuracy","Paid a fortune and still left hungry.
+$40 for a tiny portion of fried rice. Not worth it.
+I asked for no onions and they still put onions on everything.
+The room smelled like old grease and the lighting was harsh.
+Way overpriced for such small portions.",food quality,False,True,0.7,0.63,
+94,Washington,Marigold Eatery,Thai,hygiene_safety,"wait_time,food_quality","Got food poisoning after eating the spring rolls.
+It took 45 minutes to get our pad thai on a slow night.
+Soggy pad thai with no flavor at all.
+Saw a cockroach near the kitchen door.
+The tables were sticky and the restroom was filthy.",hygiene and safety,True,True,0.67,0.67,
+95,West Virginia,Pepper Eatery,Japanese,ambience,"billing_policy,hygiene_safety","They wouldn't honor the coupon and overcharged us.
+The music was so loud we couldn't talk.
+The room smelled like old grease and the lighting was harsh.
+Found a hair in my sushi rolls.
+It was freezing inside and the chairs were uncomfortable.",ambience,True,True,0.66,0.67,
+96,West Virginia,Sundial Eatery,Mediterranean,billing_policy,"ambience,staff_attitude","They wouldn't honor the coupon and overcharged us.
+The manager was dismissive when we asked about the falafel wrap.
+The room smelled like old grease and the lighting was harsh.
+The manager refused a refund for a wrong charge.
+They charged us twice for the hummus plate.",billing and policy,True,True,0.68,0.67,
+97,Wisconsin,Copper Kitchen,Indian,wait_time,"food_quality,hygiene_safety","Nobody came to our table for 30 minutes.
+It took 45 minutes to get our garlic naan on a slow night.
+Soggy garlic naan with no flavor at all.
+Waited over an hour for the biryani.
+Got food poisoning after eating the garlic naan.",wait time,True,True,1.66,0.59,
+98,Wisconsin,Juniper Kitchen,Italian,staff_attitude,"food_quality,price_value","The manager was dismissive when we asked about the carbonara.
+The hostess snapped at us for asking for a different table.
+Our server was rude and rolled his eyes at us.
+$40 for a tiny portion of carbonara. Not worth it.
+The carbonara was bland and cold.",staff attitude,True,True,0.6,0.61,
+99,Wyoming,Harbor Kitchen,American,food_quality,"order_accuracy,billing_policy","The mac and cheese was bland and cold.
+Soggy mac and cheese with no flavor at all.
+I asked for no onions and they still put onions on everything.
+The mac and cheese tasted stale, like it was made yesterday.
+They charged us twice for the BBQ ribs.",food quality,True,True,0.59,0.66,
+100,Wyoming,Maple Table,Mexican,order_accuracy,"hygiene_safety,staff_attitude","Our takeout bag was missing the enchiladas.
+We ordered the burrito and got a completely different dish.
+I asked for no onions and they still put onions on everything.
+The manager was dismissive when we asked about the enchiladas.
+The tables were sticky and the restroom was filthy.",food quality,False,True,0.71,0.76,
+101,District of Columbia,Saffron Table,Chinese,price_value,"food_quality,billing_policy","The fried rice was bland and cold.
+Way overpriced for such small portions.
+The manager refused a refund for a wrong charge.
+The dumplings cost twice what it should.
+Paid a fortune and still left hungry.",food quality,False,True,0.66,0.62,
+102,District of Columbia,Cedar Table,Thai,hygiene_safety,"food_quality,billing_policy","The green curry tasted stale, like it was made yesterday.
+Found a hair in my pad thai.
+Got food poisoning after eating the spring rolls.
+The tables were sticky and the restroom was filthy.
+They wouldn't honor the coupon and overcharged us.",hygiene and safety,True,True,1.09,0.66,
+103,Puerto Rico,Lantern Bistro,Japanese,ambience,"hygiene_safety,food_quality","It was freezing inside and the chairs were uncomfortable.
+The music was so loud we couldn't talk.
+Saw a cockroach near the kitchen door.
+The sushi rolls tasted stale, like it was made yesterday.
+The room smelled like old grease and the lighting was harsh.",hygiene and safety,False,True,0.6,0.6,
+104,Puerto Rico,Willow Bistro,Mediterranean,billing_policy,"staff_attitude,ambience","The room smelled like old grease and the lighting was harsh.
+The manager refused a refund for a wrong charge.
+They added a surprise service fee and refused to remove it.
+Our server was rude and rolled his eyes at us.
+They charged us twice for the falafel wrap.",staff attitude,False,True,0.65,0.67,
+105,Guam,Granite Bistro,Indian,wait_time,"food_quality,ambience","The room smelled like old grease and the lighting was harsh.
+Nobody came to our table for 30 minutes.
+We sat forever before anyone took our order.
+It took 45 minutes to get our biryani on a slow night.
+My biryani was overcooked and dry.",wait time,True,True,0.62,0.61,
+106,Guam,Marigold House,Italian,staff_attitude,"order_accuracy,price_value","I asked for no onions and they still put onions on everything.
+Way overpriced for such small portions.
+The manager was dismissive when we asked about the carbonara.
+The hostess snapped at us for asking for a different table.
+Staff were unfriendly and ignored our questions.",staff attitude,True,True,0.66,0.61,
+107,U.S. Virgin Islands,Pepper House,American,food_quality,"billing_policy,order_accuracy","Our takeout bag was missing the BBQ ribs.
+Soggy cheeseburger with no flavor at all.
+The manager refused a refund for a wrong charge.
+The cheeseburger tasted stale, like it was made yesterday.
+The BBQ ribs was bland and cold.",food quality,True,True,0.68,0.67,
+108,U.S. Virgin Islands,Sundial House,Mexican,order_accuracy,"wait_time,price_value","Our takeout bag was missing the burrito.
+It took 45 minutes to get our carne asada tacos on a slow night.
+$40 for a tiny portion of burrito. Not worth it.
+They forgot half of our order.
+We ordered the carne asada tacos and got a completely different dish.",food quality,False,True,0.68,0.68,
+109,American Samoa,Copper Corner,Chinese,price_value,"wait_time,food_quality","Paid a fortune and still left hungry.
+Waited over an hour for the kung pao chicken.
+$40 for a tiny portion of dumplings. Not worth it.
+The dumplings was bland and cold.
+The dumplings cost twice what it should.",food quality,False,True,0.62,0.61,
+110,American Samoa,Juniper Corner,Thai,hygiene_safety,"wait_time,food_quality","Got food poisoning after eating the pad thai.
+We sat forever before anyone took our order.
+Found a hair in my green curry.
+The tables were sticky and the restroom was filthy.
+The green curry was bland and cold.",hygiene and safety,True,True,0.65,0.68,
