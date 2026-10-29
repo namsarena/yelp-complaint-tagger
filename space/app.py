@@ -63,34 +63,34 @@ DINER_TIPS = {
     "billing_policy": "Billing complaints. Check your bill, and ask about deposits or cancellation rules up front.",
 }
 
-# Sample review sets written for the demo; generic labels, not real businesses.
+# Demo restaurants: names and reviews made up for the demo; not real businesses.
 SAMPLES = {
-"Indian restaurant · San Jose, CA": """The butter chicken was bland and the naan was burnt on one side.
+"Tandoor Telescope · San Jose, CA": """The butter chicken was bland and the naan was burnt on one side.
 Biryani was dry and the rice tasted reheated.
 Waited 40 minutes for our food on a quiet Tuesday.
 The paneer tikka was cold in the middle.
 Samosas were greasy and stale.""",
-"Burger spot · Los Angeles, CA": """Waited over an hour for two burgers and fries.
+"Patty Parallax Burgers · Los Angeles, CA": """Waited over an hour for two burgers and fries.
 Nobody took our order for 25 minutes after we sat down.
 The line was out the door and only one cashier was working.
 Our milkshakes took 20 minutes and the burger was overcooked.
 We were seated quickly but then forgotten for half an hour.""",
-"Italian restaurant · Seattle, WA": """$34 for a small plate of spaghetti. Not worth it.
+"Rigatoni Rainfall · Seattle, WA": """$34 for a small plate of spaghetti. Not worth it.
 Tiny portions for the price, we left hungry.
 The tiramisu was $16 and the size of a matchbox.
 Overpriced wine and the lasagna was just okay.
 Paid $90 for two people and still went for pizza after.""",
-"Indian takeout · Seattle, WA": """Ordered lamb vindaloo for delivery and got chicken korma instead.
+"Curry Compass Takeout · Seattle, WA": """Ordered lamb vindaloo for delivery and got chicken korma instead.
 Our order was missing the garlic naan and the raita.
 They forgot the rice with both curries.
 Asked for mild and got extra spicy. Wrong order again.
 Half the menu was sold out on a Friday night.""",
-"Italian trattoria · New York, NY": """The waiter rolled his eyes when we asked about gluten-free pasta.
+"Gnocchi Gallery Trattoria · New York, NY": """The waiter rolled his eyes when we asked about gluten-free pasta.
 Hostess was rude and told us to hurry up and order.
 They charged us for bread we never ordered and the manager refused to remove it.
 Our server was dismissive and never smiled once.
 We were overcharged on the wine and had to argue to get it fixed.""",
-"Neighborhood diner · Brooklyn, NY": """Found a hair in my pancakes and the table was sticky.
+"Skillet Satellite Diner · Brooklyn, NY": """Found a hair in my pancakes and the table was sticky.
 The restroom was filthy and had no soap.
 Saw a cockroach near the booth by the window.
 Music was so loud we could not hear each other.
@@ -153,7 +153,7 @@ def _table(lines, found):
     return pd.DataFrame({"Review": lines, "Problems": [", ".join(NAMES[l] for l in f) or "None found" for f in found]})
 
 
-EMPTY = "Paste at least one review (one per line), or pick a set of sample reviews above."
+EMPTY = "Paste at least one review (one per line), or pick a demo restaurant above."
 
 NOTE = ("\n\n---\n_Automated estimate from a small AI model. It only reads the text you pasted, can be wrong, "
         "and is not a rating, inspection or endorsement of any business. See the disclaimer below._")
@@ -233,15 +233,31 @@ HOW_IT_WORKS = """1. A small AI model (66 million parameters) reads each review 
 2. The page counts the tags across all reviews.
 3. Fixed, written rules turn the top problems into tips (diners) or actions (owners). No chatbot writes them.
 
-The model learned from about 2,000 public Yelp reviews that another AI labelled, so **accuracy varies**:
+The model learned from about 2,000 reviews in Yelp's public research dataset, labelled by another AI, so **accuracy varies**:
 it's built for complaints only, can misread negation ("not rude"), and sometimes tags food quality when the real
 problem is a wrong order."""
+
+HOW_TRAINED = """**Data.** Yelp's public research dataset of reviews ([Yelp/yelp_review_full](https://huggingface.co/datasets/Yelp/yelp_review_full)),
+released by Yelp for non-commercial use. Nothing was scraped. From its 1-2 star reviews, 3,500 were picked at random.
+
+**Labels.** A free, open AI model (Qwen3-4B-Instruct) tagged each review using a written guide: 8 problem types plus rules
+such as "praise isn't a complaint" and "slow isn't rude". Reviews not about restaurants were dropped, leaving 2,361.
+A hand check of a sample found about 18 in 20 labels right.
+
+**Training.** DistilBERT, a small model (66 million parameters), learned from 1,800 of those reviews on a free Google Colab
+GPU in about 15 minutes. Rare problems got extra weight so they aren't ignored, and each problem type got its own cut-off.
+
+**Results.** On 354 reviews it never saw, it scored macro-F1 0.71, against 0.58 for a simple keyword method. In acceptance
+tests on 110 test restaurants, the owner's best next action was right 84 times. It is weakest on wrong orders.
+
+Full details: the [model card](https://huggingface.co/nrr26/yelp-complaint-tagger) and the
+[notebook on GitHub](https://github.com/namsarena/yelp-complaint-tagger)."""
 
 DISCLAIMER = """**Disclaimer.** This is a free learning project, provided "as is", without warranty of any kind. Results are
 automated estimates from a small AI model trained on public reviews; they can be incomplete or wrong. They reflect only
 the text you paste and are **not** a rating, review, health inspection, or endorsement of any business. This project is
-not affiliated with Yelp, Google, or any restaurant. The sample reviews were written for this demo and don't describe any
-real business. Tips and actions are general information, **not** professional, legal,
+not affiliated with Yelp, Google, or any restaurant. The demo restaurants and their reviews were made up for this demo; any resemblance
+to a real business is coincidental. Tips and actions are general information, **not** professional, legal,
 health, or business advice. For food-safety concerns, check official local health inspection records. Text you paste
 is processed in memory and not saved by this app (the hosting platform may keep standard request logs). Don't paste
 personal information. Model license: CC BY-NC 4.0 (non-commercial). Code: MIT."""
@@ -258,11 +274,11 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
     )
     with gr.Tab("🧭 Before You Book (diners)"):
         gr.Markdown("**Planning a meal out?** See what unhappy guests complained about, with a tip for each.\n\n"
-                    "**Step 1.** Pick a set of sample reviews, or click **Type my own** and paste reviews.  \n"
+                    "**Step 1.** Pick a demo restaurant, or click **Type my own** and paste reviews.  \n"
                     "**Step 2.** Click **Show me what to expect**.  \n"
                     "**Step 3.** Read the tips and the chart.")
         with gr.Row():
-            d_pick = gr.Dropdown(list(SAMPLES), label="Sample reviews", value=None, scale=3)
+            d_pick = gr.Dropdown(list(SAMPLES), label="Demo restaurants", value=None, scale=3)
             d_own = gr.Button("✍️ Type my own", scale=1)
         with gr.Accordion("❓ How does it find the restaurant?", open=False):
             gr.Markdown(HOW_IT_FINDS)
@@ -276,11 +292,11 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
         d_run.click(diner_tips, inputs=d_box, outputs=[d_tips, d_chart])
     with gr.Tab("🧑‍🍳 Owner's Fix-It List"):
         gr.Markdown("**Run a restaurant?** Paste this week's 1-2 star reviews and get your **best next action**.\n\n"
-                    "**Step 1.** Pick a set of sample reviews, or click **Type my own** and paste your reviews.  \n"
+                    "**Step 1.** Pick a demo restaurant, or click **Type my own** and paste your reviews.  \n"
                     "**Step 2.** Click **Find my best next action**.  \n"
                     "**Step 3.** Start with the action at the top; the chart and table show the evidence.")
         with gr.Row():
-            o_pick = gr.Dropdown(list(SAMPLES), label="Sample reviews", value=None, scale=3)
+            o_pick = gr.Dropdown(list(SAMPLES), label="Demo restaurants", value=None, scale=3)
             o_own = gr.Button("✍️ Type my own", scale=1)
         with gr.Accordion("❓ Where do I get my reviews?", open=False):
             gr.Markdown(HOW_IT_FINDS)
@@ -296,10 +312,12 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
     gr.api(tag_review)
     with gr.Accordion("⚙️ How it works", open=False):
         gr.Markdown(HOW_IT_WORKS)
+    with gr.Accordion("📚 How the model was trained", open=False):
+        gr.Markdown(HOW_TRAINED)
     with gr.Accordion("⚖️ Disclaimer and privacy", open=False):
         gr.Markdown(DISCLAIMER)
     gr.Markdown("_Automated estimates; accuracy varies. Not affiliated with Yelp, Google or any restaurant. "
-                "Sample reviews were written for this demo. Not professional advice. Open **Disclaimer and privacy** above for details._")
+                "Demo restaurants and their reviews are made up. Not professional advice. Open **Disclaimer and privacy** above for details._")
 
 if __name__ == "__main__":
     demo.launch(mcp_server=True, theme=THEME)
