@@ -153,17 +153,18 @@ def _table(lines, found):
     return pd.DataFrame({"Review": lines, "Problems": [", ".join(NAMES[l] for l in f) or "None found" for f in found]})
 
 
-EMPTY = "Paste at least one review (one per line), or pick a demo restaurant above."
+EMPTY = "Pick a demo restaurant, or switch to **Use my own reviews** and paste at least one review (one per line)."
 
 NOTE = ("\n\n---\n_Automated estimate from a small AI model. It only reads the text you pasted, can be wrong, "
         "and is not a rating, inspection or endorsement of any business. See the disclaimer below._")
 
 
-def owner_report(reviews: str):
+def owner_report(reviews: str, restaurant: str = ""):
     """For restaurant owners: tag 1-2 star reviews (one per line), count the complaints and give the best next action.
 
     Args:
         reviews: Several 1-2 star reviews of one restaurant, one review per line.
+        restaurant: Optional restaurant name, used only to label the report.
 
     Returns:
         A plain-English action plan (best next action plus the top 3 problems with steps), a chart of
@@ -176,7 +177,8 @@ def owner_report(reviews: str):
         return ("No complaints found. This tool is built for 1-2 star reviews; happy reviews usually show nothing." + NOTE,
                 None, _table(lines, found))
     top, n = counts.index[0], int(counts.iloc[0])
-    parts = [f"## ✅ Your best next action\n**{PLAYBOOK[top][0]}**\n\n"
+    head = f"# {restaurant.strip()[:80]}\n" if (restaurant or "").strip() else ""
+    parts = [head + f"## ✅ Your best next action\n**{PLAYBOOK[top][0]}**\n\n"
              f"Why: **{NAMES[top].lower()}** comes up in {n} of {len(lines)} reviews, more than anything else.\n",
              "## Top problems and what to try"]
     for rank, (label, c) in enumerate(counts.head(3).items(), 1):
@@ -187,11 +189,12 @@ def owner_report(reviews: str):
     return "\n".join(parts) + NOTE, _chart(counts, "What customers complain about"), _table(lines, found)
 
 
-def diner_tips(reviews: str):
+def diner_tips(reviews: str, restaurant: str = ""):
     """For diners: summarise what people complain about at a restaurant and give practical tips before visiting.
 
     Args:
         reviews: Several 1-2 star reviews of one restaurant, one review per line.
+        restaurant: Optional restaurant name, used only to label the tips.
 
     Returns:
         Plain-English tips for a visitor, based only on the complaints provided, and a chart of complaint counts.
@@ -201,30 +204,40 @@ def diner_tips(reviews: str):
         return EMPTY, None
     if not len(counts):
         return "No clear complaints in these reviews." + NOTE, None
-    parts = [f"## Before you book\nIn the **{len(lines)} negative reviews** you pasted, people mention these most:\n"]
+    head = f"# {restaurant.strip()[:80]}\n" if (restaurant or "").strip() else ""
+    parts = [head + f"## Before you book\nIn the **{len(lines)} negative review{'s' if len(lines) != 1 else ''}** analysed, people mention these most:\n"]
     for label, c in counts.head(3).items():
         parts.append(f"- **{NAMES[label]}** ({c} of {len(lines)}): {DINER_TIPS[label]}")
-    parts.append("\n_This only reflects the complaints you pasted, not the whole restaurant. Read recent positive reviews too, "
+    parts.append("\n_This only reflects the reviews analysed here, not the whole restaurant. Read recent positive reviews too, "
                  "and check official health inspection records for any safety concern._")
     return "\n".join(parts) + NOTE, _chart(counts, "What diners complain about")
 
 
 def load_sample(name):
-    return SAMPLES.get(name, "")
+    """Fill the hidden review box and the name field from a demo restaurant."""
+    return SAMPLES.get(name, ""), (name or "").split(" · ")[0]
 
 
-def type_own():
-    return None, ""
+def switch_mode(mode):
+    """Show the demo picker or the 'my own reviews' fields."""
+    own = mode == MODES[1]
+    return (gr.update(visible=not own, value=None), gr.update(visible=own, value=""),
+            gr.update(visible=own, value="", label="Reviews: one per line, up to 200"),
+            gr.update(visible=not own, open=False), gr.update(value=""))
 
 
-HOW_IT_FINDS = """**It doesn't search the web, and that's on purpose.**
+MODES = ["Try a demo restaurant", "Use my own reviews"]
+
+
+HOW_IT_FINDS = """**This page never fetches reviews from any website.** Demo restaurants come with made-up reviews. To try your own:
 
 1. Open the restaurant on a site or app you already use (Google Maps, Yelp, a delivery app).
 2. Filter to **1-2 star reviews** and copy the review text.
 3. Paste them here, **one review per line**.
 
-Why paste instead of search? Review sites don't allow other tools to copy their reviews automatically, and pasting
-keeps you in control of exactly what gets analysed. Searching by restaurant name is a planned feature.
+Why not search by restaurant name? Review sites don't allow other tools to copy their reviews automatically, and their
+official APIs return only a few reviews, need paid keys, and limit how review text can be reused. This free learning project
+stays on the safe side: you choose exactly what gets analysed.
 
 Don't paste names, phone numbers or other personal details."""
 
@@ -253,14 +266,29 @@ tests on 110 test restaurants, the owner's best next action was right 84 times. 
 Full details: the [model card](https://huggingface.co/nrr26/yelp-complaint-tagger) and the
 [notebook on GitHub](https://github.com/namsarena/yelp-complaint-tagger)."""
 
-DISCLAIMER = """**Disclaimer.** This is a free learning project, provided "as is", without warranty of any kind. Results are
-automated estimates from a small AI model trained on public reviews; they can be incomplete or wrong. They reflect only
-the text you paste and are **not** a rating, review, health inspection, or endorsement of any business. This project is
-not affiliated with Yelp, Google, or any restaurant. The demo restaurants and their reviews were made up for this demo; any resemblance
-to a real business is coincidental. Tips and actions are general information, **not** professional, legal,
-health, or business advice. For food-safety concerns, check official local health inspection records. Text you paste
-is processed in memory and not saved by this app (the hosting platform may keep standard request logs). Don't paste
-personal information. Model license: CC BY-NC 4.0 (non-commercial). Code: MIT."""
+DISCLAIMER = """**Learning project, for education and demonstration only.** This page is a free, non-commercial learning project
+by an individual. It is provided **"as is" and "as available", without warranties of any kind**, express or implied,
+including accuracy, completeness, reliability, or fitness for a particular purpose.
+
+**No reliance.** Results are automated estimates from a small AI model and can be incomplete or wrong. They reflect only the
+text entered on this page and are **not statements of fact** about any business, and not a rating, review, health inspection,
+certification, or endorsement. Don't make decisions about a business, a person, or your health based only on this page.
+Tips and actions are general information, **not professional, legal, health, financial, or business advice**. For food-safety
+concerns, check official local health inspection records.
+
+**Limitation of liability.** To the fullest extent permitted by law, the author is not liable for any loss or damage arising
+from use of, or reliance on, this page or its results. You use it at your own risk.
+
+**Your input.** Only enter text you have the right to use. Don't enter personal information (names, phone numbers, emails).
+Text is processed in memory and not saved by this app; the hosting platform (Hugging Face) may keep standard request logs.
+
+**No affiliation.** Not affiliated with or endorsed by Yelp, Google, or any restaurant. Trademarks belong to their owners.
+The model was trained on Yelp's public research dataset under its non-commercial terms; no reviews were scraped, and this
+page does not fetch reviews from any website. The demo restaurants and their reviews were made up for this demo; any
+resemblance to a real business is coincidental.
+
+**Concerns.** If you think anything here is inaccurate or should be removed, post in this Space's Community tab and it will
+be reviewed. Model license: CC BY-NC 4.0 (non-commercial). Code: MIT."""
 
 THEME = gr.themes.Soft(primary_hue="red", neutral_hue="stone")
 
@@ -274,41 +302,57 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
     )
     with gr.Tab("🧭 Before You Book (diners)"):
         gr.Markdown("**Planning a meal out?** See what unhappy guests complained about, with a tip for each.\n\n"
-                    "**Step 1.** Pick a demo restaurant, or click **Type my own** and paste reviews.  \n"
+                    "**Step 1.** Choose a demo restaurant, or switch to **Use my own reviews**.  \n"
                     "**Step 2.** Click **Show me what to expect**.  \n"
                     "**Step 3.** Read the tips and the chart.")
-        with gr.Row():
-            d_pick = gr.Dropdown(list(SAMPLES), label="Demo restaurants", value=None, scale=3)
-            d_own = gr.Button("✍️ Type my own", scale=1)
-        with gr.Accordion("❓ How does it find the restaurant?", open=False):
+        d_mode = gr.Radio(MODES, value=MODES[0], label="Reviews to analyse", show_label=False)
+        d_pick = gr.Dropdown(list(SAMPLES), label="Demo restaurants", value=list(SAMPLES)[0])
+        d_name = gr.Textbox(label="Restaurant name (optional, only used to label the results)", visible=False,
+                               placeholder="e.g. The corner cafe on Main St")
+        d_box = gr.Textbox(label="Reviews: one per line, up to 200", lines=8, visible=False,
+                              placeholder="Paste 1-2 star reviews here, one per line.\nExample: Waited 40 minutes for our food.")
+        with gr.Accordion("Show the demo reviews being analysed", open=False) as d_peek:
+            d_shown = gr.Markdown()
+        with gr.Accordion("❓ Where do the reviews come from?", open=False):
             gr.Markdown(HOW_IT_FINDS)
-        d_box = gr.Textbox(label="Reviews: one per line, up to 200", lines=8,
-                           placeholder="Example:\nWaited 40 minutes for our food.\nThe soup was cold and bland.")
         d_run = gr.Button("Show me what to expect", variant="primary")
+        gr.Markdown("<small>By using this page you agree to the disclaimer at the bottom.</small>")
         d_tips = gr.Markdown()
         d_chart = gr.Plot(label="What people complain about")
-        d_pick.change(load_sample, inputs=d_pick, outputs=d_box, api_visibility="private")
-        d_own.click(type_own, outputs=[d_pick, d_box], api_visibility="private")
-        d_run.click(diner_tips, inputs=d_box, outputs=[d_tips, d_chart])
+        d_mode.change(switch_mode, inputs=d_mode, outputs=[d_pick, d_name, d_box, d_peek, d_tips],
+                          api_visibility="private")
+        d_pick.change(load_sample, inputs=d_pick, outputs=[d_box, d_name], api_visibility="private")
+        d_box.change(lambda t: "\n".join(f"- {l}" for l in (t or "").splitlines() if l.strip()), inputs=d_box,
+                         outputs=d_shown, api_visibility="private")
+        d_run.click(diner_tips, inputs=[d_box, d_name], outputs=[d_tips, d_chart])
     with gr.Tab("🧑‍🍳 Owner's Fix-It List"):
-        gr.Markdown("**Run a restaurant?** Paste this week's 1-2 star reviews and get your **best next action**.\n\n"
-                    "**Step 1.** Pick a demo restaurant, or click **Type my own** and paste your reviews.  \n"
+        gr.Markdown("**Run a restaurant?** Get your **best next action** from this week's 1-2 star reviews.\n\n"
+                    "**Step 1.** Choose a demo restaurant, or switch to **Use my own reviews**.  \n"
                     "**Step 2.** Click **Find my best next action**.  \n"
                     "**Step 3.** Start with the action at the top; the chart and table show the evidence.")
-        with gr.Row():
-            o_pick = gr.Dropdown(list(SAMPLES), label="Demo restaurants", value=None, scale=3)
-            o_own = gr.Button("✍️ Type my own", scale=1)
-        with gr.Accordion("❓ Where do I get my reviews?", open=False):
+        o_mode = gr.Radio(MODES, value=MODES[0], label="Reviews to analyse", show_label=False)
+        o_pick = gr.Dropdown(list(SAMPLES), label="Demo restaurants", value=list(SAMPLES)[1])
+        o_name = gr.Textbox(label="Restaurant name (optional, only used to label the results)", visible=False,
+                               placeholder="e.g. The corner cafe on Main St")
+        o_box = gr.Textbox(label="Reviews: one per line, up to 200", lines=8, visible=False,
+                              placeholder="Paste 1-2 star reviews here, one per line.\nExample: Waited 40 minutes for our food.")
+        with gr.Accordion("Show the demo reviews being analysed", open=False) as o_peek:
+            o_shown = gr.Markdown()
+        with gr.Accordion("❓ Where do the reviews come from?", open=False):
             gr.Markdown(HOW_IT_FINDS)
-        o_box = gr.Textbox(label="Reviews: one per line, up to 200", lines=8,
-                           placeholder="Example:\nNobody took our order for 25 minutes.\nThey charged us twice.")
         o_run = gr.Button("Find my best next action", variant="primary")
+        gr.Markdown("<small>By using this page you agree to the disclaimer at the bottom.</small>")
         o_plan = gr.Markdown()
         o_chart = gr.Plot(label="Complaints this week")
         o_table = gr.Dataframe(label="Each review and the problems found", wrap=True)
-        o_pick.change(load_sample, inputs=o_pick, outputs=o_box, api_visibility="private")
-        o_own.click(type_own, outputs=[o_pick, o_box], api_visibility="private")
-        o_run.click(owner_report, inputs=o_box, outputs=[o_plan, o_chart, o_table])
+        o_mode.change(switch_mode, inputs=o_mode, outputs=[o_pick, o_name, o_box, o_peek, o_plan],
+                          api_visibility="private")
+        o_pick.change(load_sample, inputs=o_pick, outputs=[o_box, o_name], api_visibility="private")
+        o_box.change(lambda t: "\n".join(f"- {l}" for l in (t or "").splitlines() if l.strip()), inputs=o_box,
+                         outputs=o_shown, api_visibility="private")
+        o_run.click(owner_report, inputs=[o_box, o_name], outputs=[o_plan, o_chart, o_table])
+    demo.load(load_sample, inputs=d_pick, outputs=[d_box, d_name], api_visibility="private")
+    demo.load(load_sample, inputs=o_pick, outputs=[o_box, o_name], api_visibility="private")
     gr.api(tag_review)
     with gr.Accordion("⚙️ How it works", open=False):
         gr.Markdown(HOW_IT_WORKS)
@@ -316,7 +360,7 @@ with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
         gr.Markdown(HOW_TRAINED)
     with gr.Accordion("⚖️ Disclaimer and privacy", open=False):
         gr.Markdown(DISCLAIMER)
-    gr.Markdown("_Automated estimates; accuracy varies. Not affiliated with Yelp, Google or any restaurant. "
+    gr.Markdown("_Learning project, provided as is. Automated estimates; accuracy varies. Not affiliated with Yelp, Google or any restaurant. "
                 "Demo restaurants and their reviews are made up. Not professional advice. Open **Disclaimer and privacy** above for details._")
 
 if __name__ == "__main__":
