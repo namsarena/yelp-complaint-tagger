@@ -1,4 +1,6 @@
-"""Restaurant Complaint Tagger: a page for diners and owners on top of nrr26/yelp-complaint-tagger."""
+"""Restaurant Complaint Tagger: a page for diners and owners on top of nrr26/yelp-complaint-tagger.
+
+A learning project. Outputs are automated estimates; see DISCLAIMER."""
 import gradio as gr
 import matplotlib
 import pandas as pd
@@ -151,7 +153,10 @@ def _table(lines, found):
     return pd.DataFrame({"Review": lines, "Problems": [", ".join(NAMES[l] for l in f) or "None found" for f in found]})
 
 
-EMPTY = "Paste at least one review, one per line, or pick a sample restaurant."
+EMPTY = "Paste at least one review (one per line), or pick a sample restaurant above."
+
+NOTE = ("\n\n---\n_Automated estimate from a small AI model. It only reads the text you pasted, can be wrong, "
+        "and is not a rating, inspection or endorsement of any business. See the disclaimer below._")
 
 
 def owner_report(reviews: str):
@@ -168,18 +173,18 @@ def owner_report(reviews: str):
     if not lines:
         return EMPTY, None, pd.DataFrame(columns=["Review", "Problems"])
     if not len(counts):
-        return ("No complaints found. This tool is built for 1-2 star reviews; happy reviews usually show nothing.",
+        return ("No complaints found. This tool is built for 1-2 star reviews; happy reviews usually show nothing." + NOTE,
                 None, _table(lines, found))
     top, n = counts.index[0], int(counts.iloc[0])
-    parts = [f"## Best next action\n**{PLAYBOOK[top][0]}**\n\n"
-             f"Why: {NAMES[top].lower()} comes up in {n} of {len(lines)} reviews, more than anything else.\n",
-             "## Top problems and what to do"]
+    parts = [f"## ✅ Your best next action\n**{PLAYBOOK[top][0]}**\n\n"
+             f"Why: **{NAMES[top].lower()}** comes up in {n} of {len(lines)} reviews, more than anything else.\n",
+             "## Top problems and what to try"]
     for rank, (label, c) in enumerate(counts.head(3).items(), 1):
         parts.append(f"### {rank}. {NAMES[label]} ({c} of {len(lines)} reviews)")
         parts.extend(f"- {a}" for a in PLAYBOOK[label])
         parts.append("")
-    parts.append("_A starting checklist, not professional advice. Run it again next week to see if the top bar got smaller._")
-    return "\n".join(parts), _chart(counts, "What customers complain about"), _table(lines, found)
+    parts.append("_General ideas to consider, not professional, legal or health advice. Run it again next week to see if the top bar got smaller._")
+    return "\n".join(parts) + NOTE, _chart(counts, "What customers complain about"), _table(lines, found)
 
 
 def diner_tips(reviews: str):
@@ -195,50 +200,106 @@ def diner_tips(reviews: str):
     if not lines:
         return EMPTY, None
     if not len(counts):
-        return "No clear complaints in these reviews.", None
-    parts = [f"## Before you go\nBased on **{len(lines)} negative reviews**, here is what people complain about most:\n"]
+        return "No clear complaints in these reviews." + NOTE, None
+    parts = [f"## Before you book\nIn the **{len(lines)} negative reviews** you pasted, people mention these most:\n"]
     for label, c in counts.head(3).items():
         parts.append(f"- **{NAMES[label]}** ({c} of {len(lines)}): {DINER_TIPS[label]}")
-    parts.append("\n_These tips only reflect the complaints you pasted. Read recent positive reviews too before deciding._")
-    return "\n".join(parts), _chart(counts, "What diners complain about")
+    parts.append("\n_This only reflects the complaints you pasted, not the whole restaurant. Read recent positive reviews too, "
+                 "and check official health inspection records for any safety concern._")
+    return "\n".join(parts) + NOTE, _chart(counts, "What diners complain about")
 
 
 def load_sample(name):
     return SAMPLES.get(name, "")
 
 
+def type_own():
+    return None, ""
+
+
+HOW_IT_FINDS = """**It doesn't search the web, and that's on purpose.**
+
+1. Open the restaurant on a site or app you already use (Google Maps, Yelp, a delivery app).
+2. Filter to **1-2 star reviews** and copy the review text.
+3. Paste them here, **one review per line**.
+
+Why paste instead of search? Review sites don't allow other tools to copy their reviews automatically, and pasting
+keeps you in control of exactly what gets analysed. Searching by restaurant name is a planned feature.
+
+Don't paste names, phone numbers or other personal details."""
+
+HOW_IT_WORKS = """1. A small AI model (66 million parameters) reads each review and tags up to 8 problem types:
+   wait time, staff attitude, food quality, order accuracy, price and value, hygiene and safety, ambience, billing and policy.
+2. The page counts the tags across all reviews.
+3. Fixed, written rules turn the top problems into tips (diners) or actions (owners). No chatbot writes them.
+
+The model learned from about 2,000 public Yelp reviews that another AI labelled, so **accuracy varies**:
+it's built for complaints only, can misread negation ("not rude"), and sometimes tags food quality when the real
+problem is a wrong order."""
+
+DISCLAIMER = """**Disclaimer.** This is a free learning project, provided "as is", without warranty of any kind. Results are
+automated estimates from a small AI model trained on public reviews; they can be incomplete or wrong. They reflect only
+the text you paste and are **not** a rating, review, health inspection, or endorsement of any business. This project is
+not affiliated with Yelp, Google, or any restaurant. The sample restaurants and their reviews are **fictional**; any
+resemblance to real businesses is coincidental. Tips and actions are general information, **not** professional, legal,
+health, or business advice. For food-safety concerns, check official local health inspection records. Text you paste
+is processed in memory and not saved by this app (the hosting platform may keep standard request logs). Don't paste
+personal information. Model license: CC BY-NC 4.0 (non-commercial). Code: MIT."""
+
+THEME = gr.themes.Soft(primary_hue="red", neutral_hue="stone")
+
 with gr.Blocks(title="Restaurant Complaint Tagger") as demo:
     gr.Markdown(
-        "# Restaurant Complaint Tagger\n"
-        "Paste a restaurant's **1-2 star reviews**, one per line, and see what people complain about.\n\n"
-        "A learning project · [model](https://huggingface.co/nrr26/yelp-complaint-tagger) (non-commercial) · "
-        "[code](https://github.com/namsarena/yelp-complaint-tagger) · reviews you paste are not stored by this app"
+        "# 🍽️ Restaurant Complaint Tagger\n"
+        "Find out **why** people leave bad reviews, in seconds. One tab helps you **decide where to eat**; "
+        "the other helps owners **decide what to fix first**.\n\n"
+        "_Free learning project · automated estimates, accuracy varies · "
+        "[model](https://huggingface.co/nrr26/yelp-complaint-tagger) · [code](https://github.com/namsarena/yelp-complaint-tagger)_"
     )
-    with gr.Tab("For diners"):
-        gr.Markdown("Thinking of eating somewhere? Paste its bad reviews and get a quick heads-up.")
-        d_pick = gr.Dropdown(list(SAMPLES), label="Or try a sample restaurant (fictional)", value=None)
-        d_box = gr.Textbox(label="Reviews (one per line, up to 200)", lines=8, placeholder="Paste reviews here...")
+    with gr.Tab("🧭 Before You Book (diners)"):
+        gr.Markdown("**Planning a meal out?** See what unhappy guests complained about, with a tip for each.\n\n"
+                    "**Step 1.** Pick a sample restaurant, or click **Type my own** and paste reviews.  \n"
+                    "**Step 2.** Click **Show me what to expect**.  \n"
+                    "**Step 3.** Read the tips and the chart.")
+        with gr.Row():
+            d_pick = gr.Dropdown(list(SAMPLES), label="Sample restaurants (fictional)", value=None, scale=3)
+            d_own = gr.Button("✍️ Type my own", scale=1)
+        with gr.Accordion("❓ How does it find the restaurant?", open=False):
+            gr.Markdown(HOW_IT_FINDS)
+        d_box = gr.Textbox(label="Reviews: one per line, up to 200", lines=8,
+                           placeholder="Example:\nWaited 40 minutes for our food.\nThe soup was cold and bland.")
         d_run = gr.Button("Show me what to expect", variant="primary")
         d_tips = gr.Markdown()
-        d_chart = gr.Plot(label="Complaints")
+        d_chart = gr.Plot(label="What people complain about")
         d_pick.change(load_sample, inputs=d_pick, outputs=d_box, api_visibility="private")
+        d_own.click(type_own, outputs=[d_pick, d_box], api_visibility="private")
         d_run.click(diner_tips, inputs=d_box, outputs=[d_tips, d_chart])
-    with gr.Tab("For restaurant owners"):
-        gr.Markdown("Paste this week's 1-2 star reviews and get your best next action.")
-        o_pick = gr.Dropdown(list(SAMPLES), label="Or try a sample restaurant (fictional)", value=None)
-        o_box = gr.Textbox(label="Reviews (one per line, up to 200)", lines=8, placeholder="Paste reviews here...")
+    with gr.Tab("🧑‍🍳 Owner's Fix-It List"):
+        gr.Markdown("**Run a restaurant?** Paste this week's 1-2 star reviews and get your **best next action**.\n\n"
+                    "**Step 1.** Pick a sample restaurant, or click **Type my own** and paste your reviews.  \n"
+                    "**Step 2.** Click **Find my best next action**.  \n"
+                    "**Step 3.** Start with the action at the top; the chart and table show the evidence.")
+        with gr.Row():
+            o_pick = gr.Dropdown(list(SAMPLES), label="Sample restaurants (fictional)", value=None, scale=3)
+            o_own = gr.Button("✍️ Type my own", scale=1)
+        with gr.Accordion("❓ Where do I get my reviews?", open=False):
+            gr.Markdown(HOW_IT_FINDS)
+        o_box = gr.Textbox(label="Reviews: one per line, up to 200", lines=8,
+                           placeholder="Example:\nNobody took our order for 25 minutes.\nThey charged us twice.")
         o_run = gr.Button("Find my best next action", variant="primary")
         o_plan = gr.Markdown()
         o_chart = gr.Plot(label="Complaints this week")
-        o_table = gr.Dataframe(label="Each review", wrap=True)
+        o_table = gr.Dataframe(label="Each review and the problems found", wrap=True)
         o_pick.change(load_sample, inputs=o_pick, outputs=o_box, api_visibility="private")
+        o_own.click(type_own, outputs=[o_pick, o_box], api_visibility="private")
         o_run.click(owner_report, inputs=o_box, outputs=[o_plan, o_chart, o_table])
     gr.api(tag_review)
-    gr.Markdown(
-        "**Limits:** built for complaints only (4-5 star reviews may get false tags), can misread negation "
-        "(\"not rude\"), may tag food quality when the real problem is a wrong order, and learned from "
-        "AI-labelled examples. English only. Sample restaurants and their reviews are fictional."
-    )
+    with gr.Accordion("⚙️ How it works", open=False):
+        gr.Markdown(HOW_IT_WORKS)
+    with gr.Accordion("⚖️ Disclaimer and privacy", open=False):
+        gr.Markdown(DISCLAIMER)
+    gr.Markdown("_Automated estimates; accuracy varies. Not affiliated with Yelp, Google or any restaurant. "
+                "Samples are fictional. Not professional advice. Open **Disclaimer and privacy** above for details._")
 
 if __name__ == "__main__":
-    demo.launch(mcp_server=True)
+    demo.launch(mcp_server=True, theme=THEME)
